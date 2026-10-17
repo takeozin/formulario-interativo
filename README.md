@@ -48,4 +48,12 @@ src/
 │   ├── styles/       tokens de cor e métricas de espaçamento
 │   └── constants/    configurações gerais e opções dos campos do formulário
 └── utils/        funções de validação dos campos
+supabase/
+└── migrations/   migrations versionadas do banco remoto (Supabase)
 ```
+
+## Banco de dados
+
+- **Local (SQLite):** cada resposta fica na tabela `responses` do aparelho e é gravada a cada etapa, com `status` `in_progress` ou `completed`. As telas não escrevem SQL: o caminho é `FormContext` → `responseRepository` → `database`. A coluna `synced` indica se a resposta já foi enviada.
+- **Remoto (Supabase/Postgres):** a tabela `responses` espelha a do aparelho, sem a coluna `synced`. A estrutura é criada pelas migrations em `supabase/migrations/`.
+- **Permissões no Supabase:** com RLS ligado, o app (chave anon/publishable) só pode inserir respostas que tenham a autorização registrada. A leitura é só pelo painel (service_role).

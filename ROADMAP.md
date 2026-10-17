@@ -28,12 +28,15 @@ O app coleta dados de menores; sem o texto aprovado ele não pode ir a evento. D
 
 ### 2. Envio das respostas ao Supabase · importância alta · dificuldade média
 Hoje as respostas ficam presas no aparelho.
-- [ ] Definir de quem é o projeto Supabase (equipe ou cliente) e criar a tabela `responses` espelhando a do SQLite
-- [ ] RLS: o app só pode **inserir**; leitura apenas para o cliente/admin
+- [x] Criar a tabela `responses` espelhando a do SQLite (`supabase/migrations/20261017084545_create_responses.sql`, aplicada em 17/10/2026)
+- [x] RLS: o app só pode **inserir**; leitura apenas para o cliente/admin (testado com a chave anon; advisor de segurança sem alertas)
+- [ ] Definir de quem é o projeto Supabase (equipe ou cliente)
 - [ ] Serviço de sincronização em `src/services/` usando `listPendingSync` e `markAsSynced`
-- [ ] Enviar só respostas `completed` e marcar `synced = 1` apenas depois da confirmação do servidor
+- [ ] Enviar só respostas `completed`: hoje `listPendingSync` devolve também as `in_progress`. Como o app não tem UPDATE, a primeira versão enviada é a definitiva, e uma resposta descartada no aparelho (menor sem autorização) continuaria no Supabase
+- [ ] Restringir a policy de INSERT a `status = 'completed'` (nova migration), para o banco também barrar o envio de respostas incompletas
+- [ ] Marcar `synced = 1` apenas depois da confirmação do servidor
 - [ ] Reenviar automaticamente quando a internet voltar (evento presencial pode não ter rede)
-- [ ] Evitar duplicata no reenvio (usar o `id` gerado pelo `expo-crypto` como chave)
+- [ ] Evitar duplicata no reenvio: usar `insert` simples, sem `.select()`, e tratar o erro **409** (código `23505`) como "já enviado". O upsert com `ignoreDuplicates` **não funciona** só com permissão de INSERT: o `ON CONFLICT (id)` exige SELECT e volta 401
 - [ ] Chaves em `.env` (`EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`) e `.env.example` no repositório
 - [ ] Testar: responder offline, voltar a ficar online, conferir as linhas no Supabase
 
@@ -61,10 +64,7 @@ Só faz sentido com as animações prontas.
 - [ ] Ligar a vibração aos momentos certos da animação
 
 ## ❓ Decisões pendentes
-- [ ] Já existe um projeto Supabase para o app ou será criado do zero?
-- [ ] A arte do ninja vem da Beast MaraGames ou é produzida pela equipe?
-- [ ] O totem/tablet do evento será usado na horizontal? (se sim, trocar `"orientation"` para `"default"` no `app.json`)
-
+- [x] Já existe um projeto Supabase para o app ou será criado do zero? (existe: `ikyoqrpvqtodingkjdwq`)
 ## 🔄 Sequência de Próximos Passos
 
 1. **Mandar ao cliente um único pedido** com o texto de autorização, as faixas de idade, o link educacional, o Style Guide e a pergunta sobre a arte do ninja.
