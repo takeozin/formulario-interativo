@@ -45,7 +45,7 @@ export default function DoneScreen({ navigation }) {
         <InviteCard>
           <InviteTitle>Quer aprender a criar jogos?</InviteTitle>
           <InviteText>
-            A Beast MaraGames tem uma plataforma educacional para quem quer entrar no mercado de games.
+            A Beast Maragames tem uma plataforma educacional para quem quer entrar no mercado de games.
           </InviteText>
           <PrimaryButton title="Conhecer a plataforma" onPress={handleOpenPlatform} />
           <FieldError message={linkError} />

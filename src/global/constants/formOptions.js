@@ -16,7 +16,8 @@ export const AVATAR_OPTIONS = [
   { id: 'ninja_female', label: 'Ninja feminino' },
 ];
 
-// TODO: confirmar as faixas com a Beast MaraGames.
+// Faixas definidas pela equipe: o corte em 18 anos bate com a regra de
+// autorização, e "Até 11 anos" coincide com criança na LGPD (menos de 12).
 // "minor: true" marca as faixas de menores de 18 anos (exigem autorização).
 export const AGE_RANGES = [
   { id: 'under_12', label: 'Até 11 anos', minor: true },

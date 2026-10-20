@@ -21,6 +21,7 @@ export const NoticeText = styled.Text`
   font-size: 15px;
   line-height: 22px;
   color: ${colors.muted};
+  ${(props) => props.$spaced && `margin-top: ${spacing.sm}px;`}
 `;
 
 export const SectionLabel = styled.Text`
