@@ -1,6 +1,6 @@
 # Roadmap: Formulário Interativo (Arena Itinerante)
 
-> **Status (16/10/2026): fase 1 concluída.** O app roda no celular pelo Expo Go e grava as respostas no próprio aparelho, sem internet. Ainda **não está pronto para uso em evento**: falta enviar os dados ao cliente e fechar com a Beast MaraGames os textos que hoje são rascunho.
+> **Status (20/10/2026): fase 1 concluída; envio ao Supabase implementado e aguardando teste.** O app roda no celular pelo Expo Go, grava as respostas no próprio aparelho, sem internet, e envia as respostas completas ao Supabase quando há conexão (branch `feat/sync-supabase`, ainda sem teste no celular). Ainda **não está pronto para uso em evento**: falta testar o envio no celular e fechar com a Beast MaraGames os textos que hoje são rascunho.
 
 Equipe **Soulstar** (Programação Mobile, Engenharia de Software, UNDB): Lucas Takeo, Rui Elias, Marcelo Emanuel, Marcos André, Matheus Gomes e Lindoar Guagliardo.
 Cliente: Arena Itinerante, Beast MaraGames. Repositório: `takeozin/formulario-interativo`.
@@ -30,15 +30,15 @@ O app coleta dados de menores; sem o texto aprovado ele não pode ir a evento. D
 Hoje as respostas ficam presas no aparelho.
 - [x] Criar a tabela `responses` espelhando a do SQLite (`supabase/migrations/20261017084545_create_responses.sql`, aplicada em 17/10/2026)
 - [x] RLS: o app só pode **inserir**; leitura apenas para o cliente/admin (testado com a chave anon; advisor de segurança sem alertas)
-- [ ] Definir de quem é o projeto Supabase (equipe ou cliente)
-- [ ] Serviço de sincronização em `src/services/` usando `listPendingSync` e `markAsSynced`
-- [ ] Enviar só respostas `completed`: hoje `listPendingSync` devolve também as `in_progress`. Como o app não tem UPDATE, a primeira versão enviada é a definitiva, e uma resposta descartada no aparelho (menor sem autorização) continuaria no Supabase
-- [ ] Restringir a policy de INSERT a `status = 'completed'` (nova migration), para o banco também barrar o envio de respostas incompletas
-- [ ] Marcar `synced = 1` apenas depois da confirmação do servidor
-- [ ] Reenviar automaticamente quando a internet voltar (evento presencial pode não ter rede)
-- [ ] Evitar duplicata no reenvio: usar `insert` simples, sem `.select()`, e tratar o erro **409** (código `23505`) como "já enviado". O upsert com `ignoreDuplicates` **não funciona** só com permissão de INSERT: o `ON CONFLICT (id)` exige SELECT e volta 401
-- [ ] Chaves em `.env` (`EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`) e `.env.example` no repositório
-- [ ] Testar: responder offline, voltar a ficar online, conferir as linhas no Supabase
+- [x] Definir de quem é o projeto Supabase: projeto da equipe Soulstar (`ikyoqrpvqtodingkjdwq`)
+- [x] Serviço de sincronização em `src/services/` usando `listPendingSync` e `markAsSynced` (`src/services/syncService.js`)
+- [x] Enviar só respostas `completed`: `listPendingSync` agora filtra `status = 'completed'`, então resposta em andamento ou descartada no aparelho (menor sem autorização) nunca chega ao Supabase
+- [x] Restringir a policy de INSERT a `status = 'completed'` (nova migration), para o banco também barrar o envio de respostas incompletas (`supabase/migrations/20261020052648_restrict_insert_to_completed.sql`, aplicada em 20/10/2026; testado com a chave anon: `in_progress` recusado com 401, `completed` aceito, duplicado devolve `23505`; advisor de segurança sem alertas)
+- [x] Marcar `synced = 1` apenas depois da confirmação do servidor
+- [x] Reenviar automaticamente quando a internet voltar (evento presencial pode não ter rede): ao abrir o app, ao concluir o formulário e na volta da internet (NetInfo `isInternetReachable`, `src/hooks/useResponseSync.js`)
+- [x] Evitar duplicata no reenvio: usar `insert` simples, sem `.select()`, e tratar o erro **409** (código `23505`) como "já enviado". O upsert com `ignoreDuplicates` **não funciona** só com permissão de INSERT: o `ON CONFLICT (id)` exige SELECT e volta 401
+- [x] Chaves em `.env` (`EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`) e `.env.example` no repositório (`.env` no `.gitignore`)
+- [ ] Testar: responder offline, voltar a ficar online, conferir as linhas no Supabase (envio implementado na branch feat/sync-supabase, aguardando teste no celular (Expo Go) antes do merge na main)
 
 ### 3. Cores do Style Guide · importância média · dificuldade baixa
 - [ ] Pedir o Style Guide à Beast MaraGames (pode ir junto com o pedido do item 1)
@@ -70,7 +70,7 @@ Só faz sentido com as animações prontas.
 1. **Mandar ao cliente um único pedido** com o texto de autorização, as faixas de idade, o link educacional, o Style Guide e a pergunta sobre a arte do ninja.
 2. **Supabase** (item 2) enquanto o cliente responde.
 3. **Aplicar o conteúdo e as cores** recebidos (itens 1 e 3) e testar o fluxo completo no celular.
-4. **Fechar a fase 2** com teste em condição de evento (sem internet → com internet).
+4. **Fechar a fase 2** com teste em condição de evento (sem internet → com internet) e remover o console.log da tela Done que lista as respostas do aparelho (mostra nomes de visitantes no terminal).
 5. **Começar a fase 3** pelas animações (item 4) e depois a vibração (item 5).
 
 ## ✅ Concluído (fase 1)
