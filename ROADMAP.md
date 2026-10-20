@@ -3,7 +3,7 @@
 > **Status (20/10/2026): fase 1 concluída; envio ao Supabase implementado (aguardando teste) e conteúdo oficial definido pela equipe.** O app roda no celular pelo Expo Go, grava as respostas no próprio aparelho, sem internet, envia as respostas completas ao Supabase quando há conexão e já conta com o texto de autorização e links oficiais da Beast Maragames (branch `feat/conteudo-oficial`). Falta testar o envio no celular e definir a paleta de cores.
 
 Equipe **Soulstar** (Programação Mobile, Engenharia de Software, UNDB): Lucas Takeo, Rui Elias, Marcelo Emanuel, Marcos André, Matheus Gomes e Lindoar Guagliardo.
-Cliente: Arena Itinerante, Beast MaraGames. Repositório: `takeozin/formulario-interativo`.
+Cliente: Arena Itinerante, Beast Maragames. Repositório: `takeozin/formulario-interativo`.
 
 ## 📊 Baseline (16/10/2026)
 - 7 telas em sequência: Welcome → Character → Name → Age → Intent → Feedback → Done
@@ -20,7 +20,7 @@ Cliente: Arena Itinerante, Beast MaraGames. Repositório: `takeozin/formulario-i
 Objetivo: o app pode ser usado num evento de verdade e as respostas chegam ao cliente.
 
 ### 1. Conteúdo oficial (definido pela equipe) · importância alta · dificuldade baixa
-Não há contato direto prévio com a Beast Maragames: o projeto será apresentado pronto a ela. Por isso, as definições de conteúdo foram estabelecidas pela própria equipe Soulstar.
+Textos, faixas de idade e link definidos pela equipe Soulstar.
 - [x] Texto de autorização definitivo na tela inicial (versão 1.0, com retenção de até 12 meses e canal para solicitar exclusão no estande ou pelo e-mail contato@maragames.app)
 - [x] Faixas de idade: mantidas as 6 faixas em `src/global/constants/formOptions.js` (o corte em 18 anos atende à regra de autorização e "Até 11 anos" coincide com criança na LGPD)
 - [x] Link real da plataforma educacional (`EDUCATIONAL_URL = 'https://maragames.app/'`, plataforma de cursos de criação de jogos da Beast Maragames)
@@ -40,8 +40,8 @@ Hoje as respostas ficam presas no aparelho.
 - [x] Chaves em `.env` (`EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`) e `.env.example` no repositório (`.env` no `.gitignore`)
 - [ ] Testar: responder offline, voltar a ficar online, conferir as linhas no Supabase (envio implementado na branch feat/sync-supabase, aguardando teste no celular (Expo Go) antes do merge na main)
 
-### 3. Cores do Style Guide · importância média · dificuldade baixa
-- [ ] Definir a paleta de cores (o site não publica Style Guide; a equipe define a paleta)
+### 3. Paleta de cores · importância média · dificuldade baixa
+- [ ] Definir a paleta de cores (definida pela equipe Soulstar, com base na identidade visual da Beast Maragames)
 - [ ] Trocar os valores em `src/global/styles/colors.js`
 - [ ] Conferir contraste do texto nas telas (o público inclui crianças e o uso é em totem/tablet)
 
@@ -53,7 +53,7 @@ Objetivo: o formulário vira uma experiência de jogo com o ninja. Fica separado
 A validação e a gravação já existem; muda só a camada visual de Character, Name e Age.
 
 > **Referência visual:** a fera mascote da Beast Maragames usa roxo e vermelho (maragames.app). Pode servir de base para as cores do ninja e das animações, mas a decisão fica para quando a arte for produzida.
-- [ ] Definir quem produz a arte do ninja (cliente ou Soulstar) e o formato (sprites ou Lottie)
+- [ ] Produzir a arte do ninja (equipe Soulstar) e definir o formato (sprites ou Lottie)
 - [ ] Escolher a biblioteca de animação (ex.: `react-native-reanimated`, `lottie-react-native`) compatível com o Expo SDK 57
 - [ ] Character animado
 - [ ] Name animado
