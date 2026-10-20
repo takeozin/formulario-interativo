@@ -57,10 +57,14 @@ export async function listResponses() {
   return db.getAllAsync('SELECT * FROM responses ORDER BY created_at DESC');
 }
 
-// Usados na fase 2, quando o envio ao Supabase for implementado.
+// Usados pelo syncService para enviar as respostas ao Supabase.
+// Só vão respostas completas: as em andamento ainda podem mudar ou ser
+// descartadas (ex.: menor de idade sem autorização).
 export async function listPendingSync() {
   const db = await getDatabase();
-  return db.getAllAsync('SELECT * FROM responses WHERE synced = 0 ORDER BY created_at ASC');
+  return db.getAllAsync(
+    "SELECT * FROM responses WHERE synced = 0 AND status = 'completed' ORDER BY created_at ASC"
+  );
 }
 
 export async function markAsSynced(ids) {

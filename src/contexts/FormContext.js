@@ -3,6 +3,7 @@ import * as Crypto from 'expo-crypto';
 import { CONSENT_VERSION } from '../global/constants/config';
 import { getDatabase } from '../services/database';
 import { deleteResponse, saveResponse } from '../services/responseRepository';
+import { syncPendingResponses } from '../services/syncService';
 
 const FormContext = createContext(null);
 
@@ -76,13 +77,17 @@ export function FormProvider({ children }) {
   const saveAnswers = useCallback((patch) => commit({ ...answersRef.current, ...patch }), [commit]);
 
   const finishSession = useCallback(
-    (patch = {}) =>
-      commit({
+    async (patch = {}) => {
+      const next = await commit({
         ...answersRef.current,
         ...patch,
         status: 'completed',
         completedAt: new Date().toISOString(),
-      }),
+      });
+      // Envia em segundo plano, sem await: a tela Done não espera a rede.
+      syncPendingResponses();
+      return next;
+    },
     [commit]
   );
 
