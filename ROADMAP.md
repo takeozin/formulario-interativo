@@ -1,6 +1,6 @@
 # Roadmap: Formulário Interativo (Arena Itinerante)
 
-> **Status (23/10/2026): fase 2 concluída; fase 3 começou com as animações e a vibração.** O app roda no celular pelo Expo Go (SDK 58), grava as respostas no próprio aparelho, sem internet, envia as respostas completas ao Supabase quando há conexão e já conta com o texto de autorização, os links oficiais e a paleta de cores da Beast Maragames (PR #5). As telas Character, Name e Age ganharam animações e a vibração do corte e da pincelada (PR #7), ainda com formas simples no lugar da arte do ninja. O PR #4 (vibração ao avançar de tela) foi fechado em favor do #7.
+> **Status (23/10/2026): fase 2 concluída; fase 3 começou com as animações e a vibração.** O app roda no celular pelo Expo Go (SDK 58), grava as respostas no próprio aparelho, sem internet, envia as respostas completas ao Supabase quando há conexão e já conta com o texto de autorização, os links oficiais e a paleta de cores da Beast Maragames (PR #5). As telas Character, Name e Age ganharam uma versão provisória das animações, com formas simples no lugar da arte, e a vibração do corte e da pincelada (PR #7). O PR #4 (vibração ao avançar de tela) foi fechado em favor do #7.
 
 Equipe **Soulstar** (Programação Mobile, Engenharia de Software, UNDB): Lucas Takeo, Rui Elias, Marcelo Emanuel, Marcos André, Matheus Gomes e Lindoar Guagliardo.
 Cliente: Arena Itinerante, Beast Maragames. Repositório: `takeozin/formulario-interativo`.
@@ -64,15 +64,17 @@ A validação e a gravação já existem; muda só a camada visual de Character,
 > **Referência visual:** a fera mascote da Beast Maragames usa roxo e vermelho (maragames.app). Pode servir de base para as cores do ninja e das animações, mas a decisão fica para quando a arte for produzida.
 - [ ] Produzir a arte do ninja (equipe Soulstar) e definir o formato (sprites ou Lottie)
 - [x] Escolher a biblioteca de animação: `Animated` do próprio React Native, com driver nativo e sem dependência nova (PR #7). Rever se a arte vier em Lottie
-- [x] Character animado: cartões entram em sequência e o escolhido dá um "pulo" (`PopIn`), por enquanto sem a imagem do ninja
-- [x] Name animado: pincelada sob o campo ao continuar (`BrushStroke`)
-- [x] Age animado: lâmina corta o cartão escolhido, estilo Fruit Ninja (`CutCard`)
+- [x] Versão provisória das animações com formas simples (PR #7): cartões de Character entram em sequência e "pulam" (`PopIn`), pincelada em Name (`BrushStroke`) e corte em Age (`CutCard`)
+- [ ] Character animado com a arte do ninja
+- [ ] Name animado com a arte do pincel e do pergaminho
+- [ ] Age animado com a arte da lâmina
 - [ ] Testar desempenho em aparelho mais fraco (o totem/tablet do evento)
 
 ### 5. Vibração do corte e da pincelada · importância baixa · dificuldade baixa
 Só faz sentido com as animações prontas.
 - [x] Novas funções em `src/services/haptics.js` (RF06 do DRDA): `cutFeedback` (impacto seco) e `brushFeedback` (impacto suave)
-- [x] Ligar a vibração aos momentos certos da animação: `src/hooks/useImpactAnimation.js` dispara a vibração no instante do contato, e cada escolha vibra uma vez só
+- [x] Ligar a vibração aos momentos certos da animação: `src/hooks/useImpactAnimation.js` dispara a vibração no instante do contato, e cada escolha vibra uma vez só (feito sobre as formas provisórias)
+- [ ] Conferir o momento da vibração quando a arte entrar no lugar das formas
 
 ## ❓ Decisões pendentes
 - [x] Já existe um projeto Supabase para o app ou será criado do zero? (existe: `ikyoqrpvqtodingkjdwq`)
@@ -80,7 +82,7 @@ Só faz sentido com as animações prontas.
 
 1. **Testar no celular** (Expo Go SDK 58) a paleta nova e as animações e vibração das telas Character, Name e Age, e cada integrante roda `npm install` e atualiza o Expo Go.
 2. **Limpar os dados de teste** da tabela `responses` no Supabase antes de apresentar o app (inclui as respostas com `consent_version = 'rascunho-1'`).
-3. **Arte do ninja** (item 4): produzir a arte e colocar as imagens nas animações de Character, Name e Age.
+3. **Arte** (item 4): produzir a arte do ninja, do pincel, do pergaminho e da lâmina e trocar as formas provisórias de Character, Name e Age, conferindo o momento da vibração.
 4. **Testar desempenho** no totem/tablet do evento ou num aparelho mais fraco.
 
 
