@@ -16,12 +16,12 @@ export default function CharacterScreen({ navigation }) {
     saveAnswers({ avatar: id });
   }
 
-  async function handleContinue() {
+  function handleContinue() {
     if (!answers.avatar) {
       setError('Escolha um ninja para continuar.');
       return;
     }
-    await selectionFeedback();
+    selectionFeedback();
     navigation.navigate('Name');
   }
 

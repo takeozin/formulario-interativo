@@ -19,7 +19,7 @@ export default function AgeScreen({ navigation }) {
     saveAnswers({ ageRange: id });
   }
 
-  async function handleContinue() {
+  function handleContinue() {
     const range = AGE_RANGES.find((item) => item.id === answers.ageRange);
 
     if (!range) {
@@ -30,7 +30,7 @@ export default function AgeScreen({ navigation }) {
       setBlocked(true);
       return;
     }
-    await selectionFeedback();
+    selectionFeedback();
     navigation.navigate('Intent');
   }
 

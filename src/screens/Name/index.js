@@ -18,14 +18,14 @@ export default function NameScreen({ navigation }) {
     setError('');
   }
 
-  async function handleContinue() {
+  function handleContinue() {
     const message = validateName(name);
     if (message) {
       setError(message);
       return;
     }
     saveAnswers({ name: name.trim() });
-    await selectionFeedback();
+    selectionFeedback();
     navigation.navigate('Age');
   }
 
