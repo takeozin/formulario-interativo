@@ -1,6 +1,6 @@
 # Roadmap: Formulário Interativo (Arena Itinerante)
 
-> **Status (22/10/2026): fase 1 concluída; envio ao Supabase e conteúdo oficial testados no celular.** O app roda no celular pelo Expo Go, grava as respostas no próprio aparelho, sem internet, envia as respostas completas ao Supabase quando há conexão e já conta com o texto de autorização e links oficiais da Beast Maragames. As mudanças estão nos PRs #1 (envio ao Supabase) e #2 (conteúdo oficial), aguardando merge na main. Falta definir a paleta de cores.
+> **Status (23/10/2026): fase 2 concluída; fase 3 começou com as animações e a vibração.** O app roda no celular pelo Expo Go (SDK 58), grava as respostas no próprio aparelho, sem internet, envia as respostas completas ao Supabase quando há conexão e já conta com o texto de autorização, os links oficiais e a paleta de cores da Beast Maragames (PR #5). As telas Character, Name e Age ganharam uma versão provisória das animações, com formas simples no lugar da arte, e a vibração do corte e da pincelada (PR #7). O PR #4 (vibração ao avançar de tela) foi fechado em favor do #7.
 
 Equipe **Soulstar** (Programação Mobile, Engenharia de Software, UNDB): Lucas Takeo, Rui Elias, Marcelo Emanuel, Marcos André, Matheus Gomes e Lindoar Guagliardo.
 Cliente: Arena Itinerante, Beast Maragames. Repositório: `takeozin/formulario-interativo`.
@@ -42,9 +42,17 @@ Hoje as respostas ficam presas no aparelho.
 - [x] Remover o console.log da tela Done que listava no terminal as respostas salvas no aparelho (mostrava nomes de visitantes)
 
 ### 3. Paleta de cores · importância média · dificuldade baixa
-- [ ] Definir a paleta de cores (definida pela equipe Soulstar, com base na identidade visual da Beast Maragames)
-- [ ] Trocar os valores em `src/global/styles/colors.js`
-- [ ] Conferir contraste do texto nas telas (o público inclui crianças e o uso é em totem/tablet)
+- [x] Definir a paleta de cores (definida pela equipe Soulstar, com base na identidade visual da Beast Maragames: roxo `#7429C3` e vermelho `#B50928`)
+- [x] Trocar os valores em `src/global/styles/colors.js` (PR #5)
+- [x] Conferir contraste do texto nas telas (o público inclui crianças e o uso é em totem/tablet): todos os pares passam no WCAG AA (texto 17,3:1, texto secundário 6,0:1, botão 7,4:1, botão desabilitado 5,0:1, bordas 3,8:1)
+
+### Atualização para o Expo SDK 58 · importância alta · dificuldade baixa
+O Expo Go do celular atualizou para a SDK 58 e deixou de abrir o projeto, que estava na SDK 57. Branch `chore/sdk-58`, PR #6.
+- [x] `expo` ~57.0.24 → ~58.0.17, `react-native` 0.86.3 → 0.88.0, `react` 19.2.3 → 19.3.0 e módulos nativos nas versões da SDK 58 (`npx expo install --fix`); nenhum código do app precisou mudar
+- [x] Config plugins de `expo-sqlite` e `expo-status-bar` registrados no `app.json`
+- [x] `expo-doctor` sem alertas (20/20) e bundle Android compilando (`expo export --platform android`)
+- [x] Testar no celular (Expo Go SDK 58, 23/10/2026): fluxo completo enviado ao Supabase e resposta feita em modo avião enviada ao reabrir o app com internet
+- [ ] Depois do merge, cada integrante roda `npm install` e atualiza o Expo Go
 
 ## 🎮 Fase 3: gamificação (fazer depois)
 
@@ -55,25 +63,27 @@ A validação e a gravação já existem; muda só a camada visual de Character,
 
 > **Referência visual:** a fera mascote da Beast Maragames usa roxo e vermelho (maragames.app). Pode servir de base para as cores do ninja e das animações, mas a decisão fica para quando a arte for produzida.
 - [ ] Produzir a arte do ninja (equipe Soulstar) e definir o formato (sprites ou Lottie)
-- [ ] Escolher a biblioteca de animação (ex.: `react-native-reanimated`, `lottie-react-native`) compatível com o Expo SDK 57
-- [ ] Character animado
-- [ ] Name animado
-- [ ] Age animado
+- [x] Escolher a biblioteca de animação: `Animated` do próprio React Native, com driver nativo e sem dependência nova (PR #7). Rever se a arte vier em Lottie
+- [x] Versão provisória das animações com formas simples (PR #7): cartões de Character entram em sequência e "pulam" (`PopIn`), pincelada em Name (`BrushStroke`) e corte em Age (`CutCard`)
+- [ ] Character animado com a arte do ninja
+- [ ] Name animado com a arte do pincel e do pergaminho
+- [ ] Age animado com a arte da lâmina
 - [ ] Testar desempenho em aparelho mais fraco (o totem/tablet do evento)
 
 ### 5. Vibração do corte e da pincelada · importância baixa · dificuldade baixa
 Só faz sentido com as animações prontas.
-- [ ] Novas funções em `src/services/haptics.js` (RF06 do DRDA)
-- [ ] Ligar a vibração aos momentos certos da animação
+- [x] Novas funções em `src/services/haptics.js` (RF06 do DRDA): `cutFeedback` (impacto seco) e `brushFeedback` (impacto suave)
+- [x] Ligar a vibração aos momentos certos da animação: `src/hooks/useImpactAnimation.js` dispara a vibração no instante do contato, e cada escolha vibra uma vez só (feito sobre as formas provisórias)
+- [ ] Conferir o momento da vibração quando a arte entrar no lugar das formas
 
 ## ❓ Decisões pendentes
 - [x] Já existe um projeto Supabase para o app ou será criado do zero? (existe: `ikyoqrpvqtodingkjdwq`)
 ## 🔄 Sequência de Próximos Passos
 
-1. **Merge na main** dos PRs #1 (envio ao Supabase) e #2 (conteúdo oficial), nessa ordem.
+1. **Testar no celular** (Expo Go SDK 58) a paleta nova e as animações e vibração das telas Character, Name e Age, e cada integrante roda `npm install` e atualiza o Expo Go.
 2. **Limpar os dados de teste** da tabela `responses` no Supabase antes de apresentar o app (inclui as respostas com `consent_version = 'rascunho-1'`).
-3. **Paleta de cores** (item 3): definir as cores do app baseadas na identidade da Beast Maragames (roxo e vermelho) e fechar a fase 2.
-4. **Começar a fase 3** pelas animações (item 4) e depois a vibração (item 5).
+3. **Arte** (item 4): produzir a arte do ninja, do pincel, do pergaminho e da lâmina e trocar as formas provisórias de Character, Name e Age, conferindo o momento da vibração.
+4. **Testar desempenho** no totem/tablet do evento ou num aparelho mais fraco.
 
 
 ## ✅ Concluído (fase 1)
