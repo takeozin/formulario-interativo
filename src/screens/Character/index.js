@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import ScreenLayout from '../../components/ScreenLayout';
 import OptionCard from '../../components/OptionCard';
 import PopIn from '../../components/PopIn';
+import NinjaAnimation from '../../components/NinjaAnimation';
 import PrimaryButton from '../../components/PrimaryButton';
 import FieldError from '../../components/FieldError';
 import { useForm } from '../../contexts/FormContext';
 import { AVATAR_OPTIONS } from '../../global/constants/formOptions';
 
 // RF01 - Seleção de personagem. Os cartões entram animados e o escolhido dá um
-// "pulo" (PopIn); as imagens dos ninjas entram quando a arte ficar pronta.
+// "pulo" (PopIn) e flutua (NinjaAnimation). As imagens dos ninjas são provisórias
+// até a arte final ficar pronta.
 // A vibração ao escolher vem do próprio OptionCard.
 export default function CharacterScreen({ navigation }) {
   const { answers, saveAnswers } = useForm();
@@ -37,6 +39,7 @@ export default function CharacterScreen({ navigation }) {
     >
       {AVATAR_OPTIONS.map((option, index) => (
         <PopIn key={option.id} index={index} selected={answers.avatar === option.id}>
+          <NinjaAnimation avatar={option.id} idle={answers.avatar === option.id} />
           <OptionCard
             label={option.label}
             selected={answers.avatar === option.id}
