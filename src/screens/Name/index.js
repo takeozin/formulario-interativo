@@ -9,10 +9,11 @@ import { brushFeedback } from '../../services/haptics';
 import { NAME_MAX_LENGTH, validateName } from '../../utils/validators';
 import { Hint, Input, Label } from './style';
 
-// RF02 - Coleta de nome. Ao continuar com um nome válido, o pincel toca o
-// pergaminho e a pincelada atravessa o campo; a vibração da pincelada dispara
-// no instante do toque (brushFeedback). Só a animação adia a navegação: a
-// vibração nunca é esperada, e o botão Continuar em si não vibra.
+// RF02 - Coleta de nome. Ao continuar com um nome válido, a pincelada atravessa
+// o campo e a vibração dispara no instante do toque (brushFeedback). Por enquanto
+// o pincel e a pincelada são formas simples, até a arte ficar pronta. Só a
+// animação adia a navegação: a vibração nunca é esperada, e o botão Continuar
+// em si não vibra.
 export default function NameScreen({ navigation }) {
   const { answers, saveAnswers } = useForm();
   const [name, setName] = useState(answers.name);

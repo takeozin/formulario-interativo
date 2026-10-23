@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Animated } from 'react-native';
 import { Clip, Stroke, TIP_SIZE, Tip, Track } from './styles';
 
-// Pincelada do pergaminho da tela Name. Quem usa passa os valores do
-// useImpactAnimation: approach (0 a 1) é o pincel descendo até tocar o
-// pergaminho, e follow (0 a 1) é a pincelada atravessando. A vibração da
+// Pincelada da tela Name. Provisória: uma bolinha faz o papel do pincel e uma
+// barra faz o da pincelada, até a arte ficar pronta. Quem usa passa os valores
+// do useImpactAnimation: approach (0 a 1) é o pincel descendo até tocar o
+// campo, e follow (0 a 1) é a pincelada atravessando. A vibração da
 // pincelada dispara entre as duas fases, no instante do toque.
 export default function BrushStroke({ approach, follow }) {
   const [width, setWidth] = useState(0);

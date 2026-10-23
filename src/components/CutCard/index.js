@@ -9,6 +9,7 @@ import { Blade, Clip, Wrapper } from './styles';
 // nova, uma lâmina atravessa o cartão. A vibração do corte dispara quando a
 // lâmina chega ao centro, que é o instante do corte. Por isso o OptionCard
 // de dentro não vibra sozinho (feedback=false): cada escolha vibra uma vez só.
+// Provisório: a lâmina é uma barra inclinada, até a arte ficar pronta.
 export default function CutCard({ label, selected = false, onPress }) {
   const [width, setWidth] = useState(0);
   const { approach, follow, play } = useImpactAnimation({ approachMs: 140, followMs: 240 });

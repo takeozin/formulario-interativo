@@ -28,7 +28,7 @@ export function cutFeedback() {
   fireImpact(Haptics.ImpactFeedbackStyle.Rigid);
 }
 
-// Pincelada: impacto suave, no instante em que o pincel toca o pergaminho.
+// Pincelada: impacto suave, no instante em que o pincel toca o campo.
 export function brushFeedback() {
   fireImpact(Haptics.ImpactFeedbackStyle.Soft);
 }
