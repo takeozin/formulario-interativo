@@ -1,3 +1,5 @@
+// Tokens de cor do app (paleta da Beast Maragames). Nenhuma tela usa cor solta:
+// para mudar uma cor, troque o valor aqui.
 export const colors = {
   background: '#F7F3FC',
   surface: '#FFFFFF',
