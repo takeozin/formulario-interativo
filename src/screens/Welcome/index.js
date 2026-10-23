@@ -7,7 +7,6 @@ import FieldError from '../../components/FieldError';
 import { useForm } from '../../contexts/FormContext';
 import { CONSENT_OPTIONS } from '../../global/constants/formOptions';
 import { NoticeCard, NoticeText, NoticeTitle, SectionLabel } from './style';
-import { selectionFeedback } from '../../services/haptics';
 
 export default function WelcomeScreen({ navigation }) {
   const { startSession, resetSession } = useForm();
@@ -35,7 +34,6 @@ export default function WelcomeScreen({ navigation }) {
       return;
     }
     setStarting(true);
-    selectionFeedback();
     await startSession(consentType);
     navigation.navigate('Character');
   }

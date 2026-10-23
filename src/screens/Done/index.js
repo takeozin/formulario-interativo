@@ -6,7 +6,6 @@ import FieldError from '../../components/FieldError';
 import { useForm } from '../../contexts/FormContext';
 import { EDUCATIONAL_URL } from '../../global/constants/config';
 import { InviteCard, InviteText, InviteTitle } from './style';
-import { selectionFeedback } from '../../services/haptics';
 
 export default function DoneScreen({ navigation }) {
   const { answers } = useForm();
@@ -15,7 +14,6 @@ export default function DoneScreen({ navigation }) {
 
   async function handleOpenPlatform() {
     try {
-      selectionFeedback();
       await Linking.openURL(EDUCATIONAL_URL);
     } catch (error) {
       setLinkError('Não foi possível abrir o link agora. Peça ajuda a alguém da equipe.');
@@ -23,7 +21,6 @@ export default function DoneScreen({ navigation }) {
   }
 
   function handleNext() {
-    selectionFeedback();
     navigation.reset({ index: 0, routes: [{ name: 'Welcome' }] });
   }
 

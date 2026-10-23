@@ -7,6 +7,8 @@ import { NAME_MAX_LENGTH, validateName } from '../../utils/validators';
 import { Hint, Input, Label } from './style';
 import { selectionFeedback } from '../../services/haptics';
 
+// RF02 - Coleta de nome. Nesta fase é um campo de texto comum;
+// o pergaminho e a pincelada entram na fase 2.
 export default function NameScreen({ navigation }) {
   const { answers, saveAnswers } = useForm();
   const [name, setName] = useState(answers.name);

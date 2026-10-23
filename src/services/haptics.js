@@ -4,5 +4,6 @@ export async function selectionFeedback() {
   try {
     await Haptics.selectionAsync();
   } catch (error) {
+    // sem vibração disponível: ignora
   }
 }
