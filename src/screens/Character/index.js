@@ -5,9 +5,8 @@ import PrimaryButton from '../../components/PrimaryButton';
 import FieldError from '../../components/FieldError';
 import { useForm } from '../../contexts/FormContext';
 import { AVATAR_OPTIONS } from '../../global/constants/formOptions';
+import { selectionFeedback } from '../../services/haptics';
 
-// RF01 - Seleção de personagem. Nesta fase é só uma escolha simples;
-// as imagens e animações dos ninjas entram na fase 2.
 export default function CharacterScreen({ navigation }) {
   const { answers, saveAnswers } = useForm();
   const [error, setError] = useState('');
@@ -17,11 +16,12 @@ export default function CharacterScreen({ navigation }) {
     saveAnswers({ avatar: id });
   }
 
-  function handleContinue() {
+  async function handleContinue() {
     if (!answers.avatar) {
       setError('Escolha um ninja para continuar.');
       return;
     }
+    await selectionFeedback();
     navigation.navigate('Name');
   }
 

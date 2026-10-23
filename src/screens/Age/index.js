@@ -6,9 +6,8 @@ import FieldError from '../../components/FieldError';
 import { useForm } from '../../contexts/FormContext';
 import { AGE_RANGES } from '../../global/constants/formOptions';
 import { BlockedCard, BlockedText, Grid } from './style';
+import { selectionFeedback } from '../../services/haptics';
 
-// RF03 - Coleta de idade. Nesta fase as faixas são botões comuns;
-// a mecânica de corte (estilo Fruit Ninja) entra na fase 2.
 export default function AgeScreen({ navigation }) {
   const { answers, saveAnswers, discardSession } = useForm();
   const [error, setError] = useState('');
@@ -20,18 +19,18 @@ export default function AgeScreen({ navigation }) {
     saveAnswers({ ageRange: id });
   }
 
-  function handleContinue() {
+  async function handleContinue() {
     const range = AGE_RANGES.find((item) => item.id === answers.ageRange);
 
     if (!range) {
       setError('Escolha uma faixa de idade para continuar.');
       return;
     }
-    // LGPD: menor de 18 anos só participa com autorização de um responsável.
     if (range.minor && answers.consentType !== 'guardian') {
       setBlocked(true);
       return;
     }
+    await selectionFeedback();
     navigation.navigate('Intent');
   }
 

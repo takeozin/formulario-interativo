@@ -5,9 +5,8 @@ import FieldError from '../../components/FieldError';
 import { useForm } from '../../contexts/FormContext';
 import { NAME_MAX_LENGTH, validateName } from '../../utils/validators';
 import { Hint, Input, Label } from './style';
+import { selectionFeedback } from '../../services/haptics';
 
-// RF02 - Coleta de nome. Nesta fase é um campo de texto comum;
-// o pergaminho e a pincelada entram na fase 2.
 export default function NameScreen({ navigation }) {
   const { answers, saveAnswers } = useForm();
   const [name, setName] = useState(answers.name);
@@ -19,13 +18,14 @@ export default function NameScreen({ navigation }) {
     setError('');
   }
 
-  function handleContinue() {
+  async function handleContinue() {
     const message = validateName(name);
     if (message) {
       setError(message);
       return;
     }
     saveAnswers({ name: name.trim() });
+    await selectionFeedback();
     navigation.navigate('Age');
   }
 
