@@ -1,6 +1,6 @@
 # Roadmap: Formulário Interativo (Arena Itinerante)
 
-> **Status (22/10/2026): fase 1 concluída; envio ao Supabase e conteúdo oficial testados no celular.** O app roda no celular pelo Expo Go, grava as respostas no próprio aparelho, sem internet, envia as respostas completas ao Supabase quando há conexão e já conta com o texto de autorização e links oficiais da Beast Maragames. As mudanças estão nos PRs #1 (envio ao Supabase) e #2 (conteúdo oficial), aguardando merge na main. Falta definir a paleta de cores.
+> **Status (23/10/2026): fase 1 concluída; envio ao Supabase e conteúdo oficial já na main; projeto atualizado para o Expo SDK 58.** O app roda no celular pelo Expo Go, grava as respostas no próprio aparelho, sem internet, envia as respostas completas ao Supabase quando há conexão e já conta com o texto de autorização e links oficiais da Beast Maragames. A atualização para o Expo SDK 58 está no PR #6 (branch `chore/sdk-58`), testada no celular. Continuam abertos os PRs #4 (vibração) e #5 (paleta de cores).
 
 Equipe **Soulstar** (Programação Mobile, Engenharia de Software, UNDB): Lucas Takeo, Rui Elias, Marcelo Emanuel, Marcos André, Matheus Gomes e Lindoar Guagliardo.
 Cliente: Arena Itinerante, Beast Maragames. Repositório: `takeozin/formulario-interativo`.
@@ -46,6 +46,14 @@ Hoje as respostas ficam presas no aparelho.
 - [ ] Trocar os valores em `src/global/styles/colors.js`
 - [ ] Conferir contraste do texto nas telas (o público inclui crianças e o uso é em totem/tablet)
 
+### Atualização para o Expo SDK 58 · importância alta · dificuldade baixa
+O Expo Go do celular atualizou para a SDK 58 e deixou de abrir o projeto, que estava na SDK 57. Branch `chore/sdk-58`, PR #6.
+- [x] `expo` ~57.0.24 → ~58.0.17, `react-native` 0.86.3 → 0.88.0, `react` 19.2.3 → 19.3.0 e módulos nativos nas versões da SDK 58 (`npx expo install --fix`); nenhum código do app precisou mudar
+- [x] Config plugins de `expo-sqlite` e `expo-status-bar` registrados no `app.json`
+- [x] `expo-doctor` sem alertas (20/20) e bundle Android compilando (`expo export --platform android`)
+- [x] Testar no celular (Expo Go SDK 58, 23/10/2026): fluxo completo enviado ao Supabase e resposta feita em modo avião enviada ao reabrir o app com internet
+- [ ] Depois do merge, cada integrante roda `npm install` e atualiza o Expo Go
+
 ## 🎮 Fase 3: gamificação (fazer depois)
 
 Objetivo: o formulário vira uma experiência de jogo com o ninja. Fica separado porque é o item mais trabalhoso e depende de arte que talvez ainda não exista; assim ele não atrasa a entrega da fase 2.
@@ -55,7 +63,7 @@ A validação e a gravação já existem; muda só a camada visual de Character,
 
 > **Referência visual:** a fera mascote da Beast Maragames usa roxo e vermelho (maragames.app). Pode servir de base para as cores do ninja e das animações, mas a decisão fica para quando a arte for produzida.
 - [ ] Produzir a arte do ninja (equipe Soulstar) e definir o formato (sprites ou Lottie)
-- [ ] Escolher a biblioteca de animação (ex.: `react-native-reanimated`, `lottie-react-native`) compatível com o Expo SDK 57
+- [ ] Escolher a biblioteca de animação (ex.: `react-native-reanimated`, `lottie-react-native`) compatível com o Expo SDK 58
 - [ ] Character animado
 - [ ] Name animado
 - [ ] Age animado
@@ -70,7 +78,7 @@ Só faz sentido com as animações prontas.
 - [x] Já existe um projeto Supabase para o app ou será criado do zero? (existe: `ikyoqrpvqtodingkjdwq`)
 ## 🔄 Sequência de Próximos Passos
 
-1. **Merge na main** dos PRs #1 (envio ao Supabase) e #2 (conteúdo oficial), nessa ordem.
+1. **Merge na main** do PR #6 (Expo SDK 58) e, depois, dos PRs #4 (vibração) e #5 (paleta de cores), conferindo a vibração nas telas Age, Character e Name na SDK 58.
 2. **Limpar os dados de teste** da tabela `responses` no Supabase antes de apresentar o app (inclui as respostas com `consent_version = 'rascunho-1'`).
 3. **Paleta de cores** (item 3): definir as cores do app baseadas na identidade da Beast Maragames (roxo e vermelho) e fechar a fase 2.
 4. **Começar a fase 3** pelas animações (item 4) e depois a vibração (item 5).
