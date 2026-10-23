@@ -1,4 +1,5 @@
-import { selectionFeedback } from '../services/haptics';
+import * as Haptics from 'expo-haptics';
+
 export async function selectionFeedback() {
   try {
     await Haptics.selectionAsync();
