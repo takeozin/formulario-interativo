@@ -1,18 +1,27 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { View } from 'react-native';
 import ScreenLayout from '../../components/ScreenLayout';
 import OptionCard from '../../components/OptionCard';
 import PrimaryButton from '../../components/PrimaryButton';
 import FieldError from '../../components/FieldError';
+import SlashEffect from '../../components/SlashEffect';
 import { useForm } from '../../contexts/FormContext';
 import { AGE_RANGES } from '../../global/constants/formOptions';
 import { BlockedCard, BlockedText, Grid } from './style';
 
-// RF03 - Coleta de idade. Nesta fase as faixas são botões comuns;
-// a mecânica de corte (estilo Fruit Ninja) entra na fase 2.
 export default function AgeScreen({ navigation }) {
   const { answers, saveAnswers, discardSession } = useForm();
   const [error, setError] = useState('');
   const [blocked, setBlocked] = useState(false);
+  const [slash, setSlash] = useState({ x: 0, y: 0, n: 0 });
+  const gridRef = useRef(null);
+
+  function handleTouchStart(e) {
+    const { pageX, pageY } = e.nativeEvent;
+    gridRef.current?.measureInWindow((x, y) => {
+      setSlash((s) => ({ x: pageX - x, y: pageY - y, n: s.n + 1 }));
+    });
+  }
 
   function handleSelect(id) {
     setError('');
@@ -27,7 +36,7 @@ export default function AgeScreen({ navigation }) {
       setError('Escolha uma faixa de idade para continuar.');
       return;
     }
-    // LGPD: menor de 18 anos só participa com autorização de um responsável.
+
     if (range.minor && answers.consentType !== 'guardian') {
       setBlocked(true);
       return;
@@ -54,17 +63,20 @@ export default function AgeScreen({ navigation }) {
       subtitle="Toque na opção que combina com você."
       footer={footer}
     >
-      <Grid>
-        {AGE_RANGES.map((range) => (
-          <OptionCard
-            key={range.id}
-            compact
-            label={range.label}
-            selected={answers.ageRange === range.id}
-            onPress={() => handleSelect(range.id)}
-          />
-        ))}
-      </Grid>
+      <View ref={gridRef} onTouchStart={handleTouchStart}>
+        <Grid>
+          {AGE_RANGES.map((range) => (
+            <OptionCard
+              key={range.id}
+              compact
+              label={range.label}
+              selected={answers.ageRange === range.id}
+              onPress={() => handleSelect(range.id)}
+            />
+          ))}
+        </Grid>
+        <SlashEffect trigger={slash} />
+      </View>
       <FieldError message={error} />
       {blocked ? (
         <BlockedCard accessibilityRole="alert">
