@@ -1,26 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Linking } from 'react-native';
 import ScreenLayout from '../../components/ScreenLayout';
 import PrimaryButton from '../../components/PrimaryButton';
 import FieldError from '../../components/FieldError';
 import { useForm } from '../../contexts/FormContext';
 import { EDUCATIONAL_URL } from '../../global/constants/config';
-import { listResponses } from '../../services/responseRepository';
 import { InviteCard, InviteText, InviteTitle } from './style';
 
 export default function DoneScreen({ navigation }) {
   const { answers } = useForm();
   const [linkError, setLinkError] = useState('');
   const wantsToLearn = answers.intent === 'wants_to_learn';
-
-  // Só em desenvolvimento: mostra no terminal o que ficou salvo no aparelho.
-  useEffect(() => {
-    if (__DEV__) {
-      listResponses()
-        .then((rows) => console.log('[Soulstar] Respostas salvas neste aparelho:', rows))
-        .catch((error) => console.warn('[Soulstar] Não foi possível ler as respostas:', error));
-    }
-  }, []);
 
   async function handleOpenPlatform() {
     try {
@@ -45,7 +35,7 @@ export default function DoneScreen({ navigation }) {
         <InviteCard>
           <InviteTitle>Quer aprender a criar jogos?</InviteTitle>
           <InviteText>
-            A Beast MaraGames tem uma plataforma educacional para quem quer entrar no mercado de games.
+            A Beast Maragames tem uma plataforma educacional para quem quer entrar no mercado de games.
           </InviteText>
           <PrimaryButton title="Conhecer a plataforma" onPress={handleOpenPlatform} />
           <FieldError message={linkError} />

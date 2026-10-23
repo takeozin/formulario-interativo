@@ -49,8 +49,13 @@ export default function WelcomeScreen({ navigation }) {
       <NoticeCard>
         <NoticeTitle>Como usamos seus dados</NoticeTitle>
         <NoticeText>
-          Vamos guardar seu nome ou apelido, sua faixa de idade e suas respostas. A Beast MaraGames usa essas
+          Vamos guardar seu nome ou apelido, sua faixa de idade e suas respostas. A Beast Maragames usa essas
           informações só para entender quem participa dos eventos. Não pedimos contato nem documentos.
+        </NoticeText>
+        <NoticeText $spaced>
+          As respostas ficam neste aparelho e são enviadas para um banco de dados protegido. Elas não são vendidas nem
+          repassadas a ninguém e ficam guardadas por até 12 meses. Para pedir que suas respostas sejam apagadas, fale
+          com a equipe no estande ou envie um e-mail para contato@maragames.app.
         </NoticeText>
       </NoticeCard>
 

@@ -1,9 +1,9 @@
 # Roadmap: Formulário Interativo (Arena Itinerante)
 
-> **Status (20/10/2026): fase 1 concluída; envio ao Supabase implementado e aguardando teste.** O app roda no celular pelo Expo Go, grava as respostas no próprio aparelho, sem internet, e envia as respostas completas ao Supabase quando há conexão (branch `feat/sync-supabase`, ainda sem teste no celular). Ainda **não está pronto para uso em evento**: falta testar o envio no celular e fechar com a Beast MaraGames os textos que hoje são rascunho.
+> **Status (22/10/2026): fase 1 concluída; envio ao Supabase e conteúdo oficial testados no celular.** O app roda no celular pelo Expo Go, grava as respostas no próprio aparelho, sem internet, envia as respostas completas ao Supabase quando há conexão e já conta com o texto de autorização e links oficiais da Beast Maragames. As mudanças estão nos PRs #1 (envio ao Supabase) e #2 (conteúdo oficial), aguardando merge na main. Falta definir a paleta de cores.
 
 Equipe **Soulstar** (Programação Mobile, Engenharia de Software, UNDB): Lucas Takeo, Rui Elias, Marcelo Emanuel, Marcos André, Matheus Gomes e Lindoar Guagliardo.
-Cliente: Arena Itinerante, Beast MaraGames. Repositório: `takeozin/formulario-interativo`.
+Cliente: Arena Itinerante, Beast Maragames. Repositório: `takeozin/formulario-interativo`.
 
 ## 📊 Baseline (16/10/2026)
 - 7 telas em sequência: Welcome → Character → Name → Age → Intent → Feedback → Done
@@ -19,12 +19,12 @@ Cliente: Arena Itinerante, Beast MaraGames. Repositório: `takeozin/formulario-i
 
 Objetivo: o app pode ser usado num evento de verdade e as respostas chegam ao cliente.
 
-### 1. Conteúdo oficial com a Beast MaraGames · importância alta · dificuldade baixa
-O app coleta dados de menores; sem o texto aprovado ele não pode ir a evento. Depende de resposta do cliente, por isso é o primeiro pedido a sair.
-- [ ] Pedir ao cliente o texto de autorização definitivo
-- [ ] Confirmar as seis faixas de idade (`src/global/constants/formOptions.js`)
-- [ ] Receber o link real da plataforma educacional (`EDUCATIONAL_URL`)
-- [ ] Atualizar `CONSENT_VERSION` quando o texto mudar (a versão é gravada junto com cada resposta)
+### 1. Conteúdo oficial (definido pela equipe) · importância alta · dificuldade baixa
+Textos, faixas de idade e link definidos pela equipe Soulstar.
+- [x] Texto de autorização definitivo na tela inicial (versão 1.0, com retenção de até 12 meses e canal para solicitar exclusão no estande ou pelo e-mail contato@maragames.app)
+- [x] Faixas de idade: mantidas as 6 faixas em `src/global/constants/formOptions.js` (o corte em 18 anos atende à regra de autorização e "Até 11 anos" coincide com criança na LGPD)
+- [x] Link real da plataforma educacional (`EDUCATIONAL_URL = 'https://maragames.app/'`, plataforma de cursos de criação de jogos da Beast Maragames)
+- [x] `CONSENT_VERSION` atualizado para `'1.0'` (gravado junto com cada resposta)
 
 ### 2. Envio das respostas ao Supabase · importância alta · dificuldade média
 Hoje as respostas ficam presas no aparelho.
@@ -38,10 +38,11 @@ Hoje as respostas ficam presas no aparelho.
 - [x] Reenviar automaticamente quando a internet voltar (evento presencial pode não ter rede): ao abrir o app, ao concluir o formulário e na volta da internet (NetInfo `isInternetReachable`, `src/hooks/useResponseSync.js`)
 - [x] Evitar duplicata no reenvio: usar `insert` simples, sem `.select()`, e tratar o erro **409** (código `23505`) como "já enviado". O upsert com `ignoreDuplicates` **não funciona** só com permissão de INSERT: o `ON CONFLICT (id)` exige SELECT e volta 401
 - [x] Chaves em `.env` (`EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`) e `.env.example` no repositório (`.env` no `.gitignore`)
-- [ ] Testar: responder offline, voltar a ficar online, conferir as linhas no Supabase (envio implementado na branch feat/sync-supabase, aguardando teste no celular (Expo Go) antes do merge na main)
+- [x] Testar: responder offline, voltar a ficar online, conferir as linhas no Supabase (testado no Expo Go em 22/10/2026: fluxo completo, bloqueio de menor sem autorização, envio em modo avião, reenvio ao reabrir o app e resposta abandonada que não é enviada)
+- [x] Remover o console.log da tela Done que listava no terminal as respostas salvas no aparelho (mostrava nomes de visitantes)
 
-### 3. Cores do Style Guide · importância média · dificuldade baixa
-- [ ] Pedir o Style Guide à Beast MaraGames (pode ir junto com o pedido do item 1)
+### 3. Paleta de cores · importância média · dificuldade baixa
+- [ ] Definir a paleta de cores (definida pela equipe Soulstar, com base na identidade visual da Beast Maragames)
 - [ ] Trocar os valores em `src/global/styles/colors.js`
 - [ ] Conferir contraste do texto nas telas (o público inclui crianças e o uso é em totem/tablet)
 
@@ -51,7 +52,9 @@ Objetivo: o formulário vira uma experiência de jogo com o ninja. Fica separado
 
 ### 4. Telas animadas com o ninja · importância alta · dificuldade alta
 A validação e a gravação já existem; muda só a camada visual de Character, Name e Age.
-- [ ] Definir quem produz a arte do ninja (cliente ou Soulstar) e o formato (sprites ou Lottie)
+
+> **Referência visual:** a fera mascote da Beast Maragames usa roxo e vermelho (maragames.app). Pode servir de base para as cores do ninja e das animações, mas a decisão fica para quando a arte for produzida.
+- [ ] Produzir a arte do ninja (equipe Soulstar) e definir o formato (sprites ou Lottie)
 - [ ] Escolher a biblioteca de animação (ex.: `react-native-reanimated`, `lottie-react-native`) compatível com o Expo SDK 57
 - [ ] Character animado
 - [ ] Name animado
@@ -67,11 +70,11 @@ Só faz sentido com as animações prontas.
 - [x] Já existe um projeto Supabase para o app ou será criado do zero? (existe: `ikyoqrpvqtodingkjdwq`)
 ## 🔄 Sequência de Próximos Passos
 
-1. **Mandar ao cliente um único pedido** com o texto de autorização, as faixas de idade, o link educacional, o Style Guide e a pergunta sobre a arte do ninja.
-2. **Supabase** (item 2) enquanto o cliente responde.
-3. **Aplicar o conteúdo e as cores** recebidos (itens 1 e 3) e testar o fluxo completo no celular.
-4. **Fechar a fase 2** com teste em condição de evento (sem internet → com internet) e remover o console.log da tela Done que lista as respostas do aparelho (mostra nomes de visitantes no terminal).
-5. **Começar a fase 3** pelas animações (item 4) e depois a vibração (item 5).
+1. **Merge na main** dos PRs #1 (envio ao Supabase) e #2 (conteúdo oficial), nessa ordem.
+2. **Limpar os dados de teste** da tabela `responses` no Supabase antes de apresentar o app (inclui as respostas com `consent_version = 'rascunho-1'`).
+3. **Paleta de cores** (item 3): definir as cores do app baseadas na identidade da Beast Maragames (roxo e vermelho) e fechar a fase 2.
+4. **Começar a fase 3** pelas animações (item 4) e depois a vibração (item 5).
+
 
 ## ✅ Concluído (fase 1)
 * **Fluxo do formulário:** 7 telas com React Navigation 7 (native-stack) e barra de progresso.
