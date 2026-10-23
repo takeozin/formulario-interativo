@@ -15,6 +15,7 @@ export default function DoneScreen({ navigation }) {
 
   async function handleOpenPlatform() {
     try {
+      selectionFeedback();
       await Linking.openURL(EDUCATIONAL_URL);
     } catch (error) {
       setLinkError('Não foi possível abrir o link agora. Peça ajuda a alguém da equipe.');
