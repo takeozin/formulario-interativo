@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import ScreenLayout from '../../components/ScreenLayout';
-import OptionCard from '../../components/OptionCard';
+import CutCard from '../../components/CutCard';
 import PrimaryButton from '../../components/PrimaryButton';
 import FieldError from '../../components/FieldError';
 import { useForm } from '../../contexts/FormContext';
 import { AGE_RANGES } from '../../global/constants/formOptions';
 import { BlockedCard, BlockedText, Grid } from './style';
-import { selectionFeedback } from '../../services/haptics';
 
+// RF03 - Coleta de idade. Cada faixa é cortada por uma lâmina ao ser escolhida
+// (CutCard, estilo Fruit Ninja), e a vibração do corte dispara no instante do
+// corte. O CutCard já cuida da vibração da escolha, então esta tela não vibra de novo.
 export default function AgeScreen({ navigation }) {
   const { answers, saveAnswers, discardSession } = useForm();
   const [error, setError] = useState('');
@@ -19,18 +21,18 @@ export default function AgeScreen({ navigation }) {
     saveAnswers({ ageRange: id });
   }
 
-  async function handleContinue() {
+  function handleContinue() {
     const range = AGE_RANGES.find((item) => item.id === answers.ageRange);
 
     if (!range) {
       setError('Escolha uma faixa de idade para continuar.');
       return;
     }
+    // LGPD: menor de 18 anos só participa com autorização de um responsável.
     if (range.minor && answers.consentType !== 'guardian') {
       setBlocked(true);
       return;
     }
-    await selectionFeedback();
     navigation.navigate('Intent');
   }
 
@@ -55,9 +57,8 @@ export default function AgeScreen({ navigation }) {
     >
       <Grid>
         {AGE_RANGES.map((range) => (
-          <OptionCard
+          <CutCard
             key={range.id}
-            compact
             label={range.label}
             selected={answers.ageRange === range.id}
             onPress={() => handleSelect(range.id)}

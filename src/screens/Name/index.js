@@ -1,32 +1,54 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ScreenLayout from '../../components/ScreenLayout';
 import PrimaryButton from '../../components/PrimaryButton';
 import FieldError from '../../components/FieldError';
+import BrushStroke from '../../components/BrushStroke';
 import { useForm } from '../../contexts/FormContext';
+import { useImpactAnimation } from '../../hooks/useImpactAnimation';
+import { brushFeedback } from '../../services/haptics';
 import { NAME_MAX_LENGTH, validateName } from '../../utils/validators';
 import { Hint, Input, Label } from './style';
-import { selectionFeedback } from '../../services/haptics';
 
+// RF02 - Coleta de nome. Ao continuar com um nome válido, o pincel toca o
+// pergaminho e a pincelada atravessa o campo; a vibração da pincelada dispara
+// no instante do toque (brushFeedback). Só a animação adia a navegação: a
+// vibração nunca é esperada, e o botão Continuar em si não vibra.
 export default function NameScreen({ navigation }) {
   const { answers, saveAnswers } = useForm();
   const [name, setName] = useState(answers.name);
   const [error, setError] = useState('');
   const [focused, setFocused] = useState(false);
+  const { approach, follow, play, reset } = useImpactAnimation({ approachMs: 140, followMs: 300 });
+  const painting = useRef(false);
+
+  // Ao voltar para esta tela, limpa a pincelada e libera o botão de novo.
+  useEffect(
+    () =>
+      navigation.addListener('focus', () => {
+        painting.current = false;
+        reset();
+      }),
+    [navigation, reset]
+  );
 
   function handleChange(text) {
     setName(text);
     setError('');
   }
 
-  async function handleContinue() {
+  function handleContinue() {
+    // Toque repetido (ou Enter) durante a pincelada não repete a animação.
+    if (painting.current) {
+      return;
+    }
     const message = validateName(name);
     if (message) {
       setError(message);
       return;
     }
+    painting.current = true;
     saveAnswers({ name: name.trim() });
-    await selectionFeedback();
-    navigation.navigate('Age');
+    play({ onImpact: brushFeedback, onDone: () => navigation.navigate('Age') });
   }
 
   return (
@@ -54,6 +76,7 @@ export default function NameScreen({ navigation }) {
         $hasError={Boolean(error)}
       />
       <Hint>Até {NAME_MAX_LENGTH} letras.</Hint>
+      <BrushStroke approach={approach} follow={follow} />
       <FieldError message={error} />
     </ScreenLayout>
   );
