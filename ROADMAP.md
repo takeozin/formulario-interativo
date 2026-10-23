@@ -1,6 +1,6 @@
 # Roadmap: Formulário Interativo (Arena Itinerante)
 
-> **Status (20/10/2026): fase 1 concluída; envio ao Supabase implementado (aguardando teste) e conteúdo oficial definido pela equipe.** O app roda no celular pelo Expo Go, grava as respostas no próprio aparelho, sem internet, envia as respostas completas ao Supabase quando há conexão e já conta com o texto de autorização e links oficiais da Beast Maragames (branch `feat/conteudo-oficial`). Falta testar o envio no celular e definir a paleta de cores.
+> **Status (22/10/2026): fase 1 concluída; envio ao Supabase e conteúdo oficial testados no celular.** O app roda no celular pelo Expo Go, grava as respostas no próprio aparelho, sem internet, envia as respostas completas ao Supabase quando há conexão e já conta com o texto de autorização e links oficiais da Beast Maragames. As mudanças estão nos PRs #1 (envio ao Supabase) e #2 (conteúdo oficial), aguardando merge na main. Falta definir a paleta de cores.
 
 Equipe **Soulstar** (Programação Mobile, Engenharia de Software, UNDB): Lucas Takeo, Rui Elias, Marcelo Emanuel, Marcos André, Matheus Gomes e Lindoar Guagliardo.
 Cliente: Arena Itinerante, Beast Maragames. Repositório: `takeozin/formulario-interativo`.
@@ -38,7 +38,8 @@ Hoje as respostas ficam presas no aparelho.
 - [x] Reenviar automaticamente quando a internet voltar (evento presencial pode não ter rede): ao abrir o app, ao concluir o formulário e na volta da internet (NetInfo `isInternetReachable`, `src/hooks/useResponseSync.js`)
 - [x] Evitar duplicata no reenvio: usar `insert` simples, sem `.select()`, e tratar o erro **409** (código `23505`) como "já enviado". O upsert com `ignoreDuplicates` **não funciona** só com permissão de INSERT: o `ON CONFLICT (id)` exige SELECT e volta 401
 - [x] Chaves em `.env` (`EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`) e `.env.example` no repositório (`.env` no `.gitignore`)
-- [ ] Testar: responder offline, voltar a ficar online, conferir as linhas no Supabase (envio implementado na branch feat/sync-supabase, aguardando teste no celular (Expo Go) antes do merge na main)
+- [x] Testar: responder offline, voltar a ficar online, conferir as linhas no Supabase (testado no Expo Go em 22/10/2026: fluxo completo, bloqueio de menor sem autorização, envio em modo avião, reenvio ao reabrir o app e resposta abandonada que não é enviada)
+- [x] Remover o console.log da tela Done que listava no terminal as respostas salvas no aparelho (mostrava nomes de visitantes)
 
 ### 3. Paleta de cores · importância média · dificuldade baixa
 - [ ] Definir a paleta de cores (definida pela equipe Soulstar, com base na identidade visual da Beast Maragames)
@@ -69,9 +70,9 @@ Só faz sentido com as animações prontas.
 - [x] Já existe um projeto Supabase para o app ou será criado do zero? (existe: `ikyoqrpvqtodingkjdwq`)
 ## 🔄 Sequência de Próximos Passos
 
-1. **Conteúdo oficial e Supabase** (itens 1 e 2): conteúdo definido pela equipe Soulstar e envio ao Supabase implementado.
-2. **Paleta de cores** (item 3): definir as cores do app baseadas na identidade da Beast Maragames (roxo e vermelho).
-3. **Fechar a fase 2** com teste em condição de evento (sem internet → com internet) e remover o console.log da tela Done que lista as respostas do aparelho (mostra nomes de visitantes no terminal).
+1. **Merge na main** dos PRs #1 (envio ao Supabase) e #2 (conteúdo oficial), nessa ordem.
+2. **Limpar os dados de teste** da tabela `responses` no Supabase antes de apresentar o app (inclui as respostas com `consent_version = 'rascunho-1'`).
+3. **Paleta de cores** (item 3): definir as cores do app baseadas na identidade da Beast Maragames (roxo e vermelho) e fechar a fase 2.
 4. **Começar a fase 3** pelas animações (item 4) e depois a vibração (item 5).
 
 
