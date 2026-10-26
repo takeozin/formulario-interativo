@@ -10,7 +10,7 @@ import { Content, Footer, Keyboard, Safe, Scroll, Subtitle, Title } from './styl
 export default function ScreenLayout({ step, onBack, title, subtitle, children, footer }) {
   return (
     <Safe>
-      {step ? <ProgressHeader step={step} totalSteps={TOTAL_STEPS} onBack={onBack} /> : null}
+      {step || onBack ? <ProgressHeader step={step} totalSteps={TOTAL_STEPS} onBack={onBack} /> : null}
       <Keyboard behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <Scroll>
           <Content>

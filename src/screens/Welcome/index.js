@@ -42,6 +42,7 @@ export default function WelcomeScreen({ navigation }) {
 
   return (
     <ScreenLayout
+      onBack={() => navigation.goBack()}
       title="Bem-vindo à Arena Itinerante"
       subtitle="São 5 perguntas rápidas, em cerca de 1 minuto."
       footer={<PrimaryButton title="Começar" onPress={handleStart} loading={starting} />}

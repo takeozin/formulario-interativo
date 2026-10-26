@@ -12,9 +12,12 @@ export const CONSENT_OPTIONS = [
 ];
 
 export const AVATAR_OPTIONS = [
-  { id: 'ninja_male', label: 'Ninja masculino' },
-  { id: 'ninja_female', label: 'Ninja feminino' },
+  { id: 'ninja_male', label: 'Masculino' },
+  { id: 'ninja_female', label: 'Feminino' },
 ];
+
+// Valor gravado quando o visitante escolhe "Prefiro não dizer".
+export const AVATAR_NOT_INFORMED = 'not_informed';
 
 // Faixas definidas pela equipe: o corte em 18 anos bate com a regra de
 // autorização, e "Até 11 anos" coincide com criança na LGPD (menos de 12).
