@@ -47,12 +47,12 @@ Duas opções para a tela de nome:
 
 ## 6. Intent
 
-_A definir._
+- **Ninjas do Gênero:** Um com um computador na intenção de desenvolver e outro com um controle na intenção apenas de jogar.
 
 ## 7. Feedback
 
-_A definir._
+- **Ninja:** interrogação na cabeça com uma caixa de mensagem perguntando se o cliente não vai fazer um comentário e avaliar.
 
 ## 8. Done
 
-_A definir._
+- **Padrão do Projeto:** Fundo roxo, gradiente e etc.
