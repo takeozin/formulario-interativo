@@ -16,6 +16,11 @@ Melhorar o titulo e verificar se adiciona algo ao background para dar volume, ti
 - **Sensei com caixa de mensagem:** o sensei aparece com uma caixa de diálogo explicando, de forma resumida, para que serão usadas as informações coletadas no formulário.
 - **"Ler mais":** opção para expandir a explicação resumida e ver o texto completo sobre o uso das informações.
 - **Avançar/Voltar:** botão **avançar** representa a concordância com a coleta de informações e segue o fluxo; botão **voltar** é usado caso o usuário não aceite.
+Melhorar o titulo e verificar se adiciona algo ao background para dar volume
+
+## 2. Welcome
+
+_A definir._
 
 ## 3. Character
 
@@ -41,6 +46,11 @@ Duas opções para a tela de nome:
   - **Nome acima da cabeça:** um campo translúcido posicionado acima da cabeça do personagem vai exibindo o nome conforme o usuário digita, como se fosse o "nametag" dele.
 
 
+- **Pergaminho:** o campo de nome fica em formato de pergaminho na parte superior da tela, com o título **"Qual seu nome?"**.
+- **Alvos no lugar do teclado:** em vez do teclado padrão, os caracteres aparecem como alvos de treino.
+- **Shuriken:** ao tocar em um alvo, uma animação de shuriken acerta o alvo; cerca de **150 ms** depois a shuriken some.
+- **Sensação:** cada letra digitada é um "acerto no alvo", como se o usuário estivesse treinando.
+- **Som:** cada letra digitada faz o som de shuriken sendo lançado para maior imersão
 
 ## 5. Age
 

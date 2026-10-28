@@ -60,6 +60,17 @@ export const Column = styled.View`
 export const Card = styled.TouchableOpacity`
   width: 100%;
   aspect-ratio: 0.55;
+// Centraliza o card na altura que sobra entre o Voltar e o botão de baixo.
+export const Stage = styled.View`
+  flex: 1;
+  justify-content: center;
+  margin: ${spacing.lg}px 0;
+`;
+
+// As imagens são paisagem: o card segue esse formato para não cortar o ninja.
+export const Card = styled.TouchableOpacity`
+  width: 100%;
+  aspect-ratio: 1.37;
   overflow: hidden;
   border-radius: ${radius.lg}px;
   border-width: 2px;
@@ -86,5 +97,26 @@ export const Label = styled.Text`
   font-size: 18px;
   font-weight: 700;
   text-align: center;
+  color: ${colors.onPrimary};
+`;
+
+// Seta discreta por cima da imagem que troca o personagem. $side diz o lado.
+export const ArrowButton = styled.TouchableOpacity`
+  position: absolute;
+  top: 50%;
+  margin-top: -${MIN_TOUCH_SIZE / 2}px;
+  ${(props) => props.$side}: ${spacing.sm}px;
+  width: ${MIN_TOUCH_SIZE}px;
+  height: ${MIN_TOUCH_SIZE}px;
+  border-radius: ${MIN_TOUCH_SIZE / 2}px;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(21, 11, 36, 0.55);
+`;
+
+export const ArrowText = styled.Text`
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 30px;
   color: ${colors.onPrimary};
 `;
