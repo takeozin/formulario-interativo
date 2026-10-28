@@ -3,7 +3,15 @@ import { ActivityIndicator } from 'react-native';
 import { colors } from '../../global/styles/colors';
 import { Button, Label } from './styles';
 
-export default function PrimaryButton({ title, onPress, variant = 'primary', loading = false, disabled = false }) {
+// borderColor é opcional: troca a cor da borda (ex.: contraste sobre fundo escuro).
+export default function PrimaryButton({
+  title,
+  onPress,
+  variant = 'primary',
+  loading = false,
+  disabled = false,
+  borderColor,
+}) {
   const isDisabled = disabled || loading;
 
   return (
@@ -13,6 +21,7 @@ export default function PrimaryButton({ title, onPress, variant = 'primary', loa
       activeOpacity={0.8}
       $variant={variant}
       $disabled={isDisabled}
+      $borderColor={borderColor}
       accessibilityRole="button"
       accessibilityLabel={title}
       accessibilityState={{ disabled: isDisabled, busy: loading }}

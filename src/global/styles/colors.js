@@ -13,4 +13,6 @@ export const colors = {
   danger: '#B50928',
   dangerSoft: '#FDE8EC',
   disabled: '#766B89',
+  gradientStart: '#2A0D45',
+  gradientEnd: '#E58FD0',
 };

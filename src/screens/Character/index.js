@@ -1,53 +1,125 @@
-import React, { useState } from 'react';
-import ScreenLayout from '../../components/ScreenLayout';
-import OptionCard from '../../components/OptionCard';
+import React, { useCallback, useRef, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import PopIn from '../../components/PopIn';
-import NinjaAnimation from '../../components/NinjaAnimation';
 import PrimaryButton from '../../components/PrimaryButton';
-import FieldError from '../../components/FieldError';
 import { useForm } from '../../contexts/FormContext';
-import { AVATAR_OPTIONS } from '../../global/constants/formOptions';
+import { selectionFeedback } from '../../services/haptics';
+import { AVATAR_NOT_INFORMED, AVATAR_OPTIONS } from '../../global/constants/formOptions';
+import { colors } from '../../global/styles/colors';
+import {
+  ArrowButton,
+  ArrowText,
+  Background,
+  BackButton,
+  BackText,
+  Card,
+  CardImage,
+  Content,
+  Label,
+  LabelBar,
+  Safe,
+  Stage,
+} from './style';
 
-// RF01 - Seleção de personagem. Os cartões entram animados e o escolhido dá um
-// "pulo" (PopIn) e flutua (NinjaAnimation). As imagens dos ninjas são provisórias
-// até a arte final ficar pronta.
-// A vibração ao escolher vem do próprio OptionCard.
+const IMAGES = {
+  ninja_male: require('../../../assets/ninja/ninja-masculino.jpeg'),
+  ninja_female: require('../../../assets/ninja/ninja-feminino.jpeg'),
+};
+
+// Tempo para o "pulo" do cartão aparecer antes de ir para a próxima tela.
+const NAVIGATE_DELAY = 300;
+
+// RF01 - Escolha do sexo, representado pelos ninjas. Um cartão por vez, com uma
+// seta para trocar entre masculino e feminino. Tocar no cartão já grava
+// e avança (sem botão Continuar); "Prefiro não dizer" grava "not_informed".
+// Ao voltar da tela Name, dá para escolher de novo: a resposta é sobrescrita.
 export default function CharacterScreen({ navigation }) {
   const { answers, saveAnswers } = useForm();
-  const [error, setError] = useState('');
+  // Evita que dois toques seguidos naveguem duas vezes.
+  const leaving = useRef(false);
+  const timer = useRef(null);
+  // Um card por vez: começa no masculino, ou no personagem já escolhido ao voltar.
+  const [current, setCurrent] = useState(() =>
+    Math.max(0, AVATAR_OPTIONS.findIndex((option) => option.id === answers.avatar))
+  );
+  const option = AVATAR_OPTIONS[current];
+  const selected = answers.avatar === option.id;
+  const isFirst = current === 0;
+
+  useFocusEffect(
+    useCallback(() => {
+      leaving.current = false;
+      return () => clearTimeout(timer.current);
+    }, [])
+  );
 
   function handleSelect(id) {
-    setError('');
-    saveAnswers({ avatar: id });
-  }
-
-  function handleContinue() {
-    if (!answers.avatar) {
-      setError('Escolha um ninja para continuar.');
+    if (leaving.current) {
       return;
     }
+    leaving.current = true;
+    selectionFeedback();
+    saveAnswers({ avatar: id });
+    timer.current = setTimeout(() => navigation.navigate('Name'), NAVIGATE_DELAY);
+  }
+
+  function handleToggle() {
+    selectionFeedback();
+    setCurrent(isFirst ? 1 : 0);
+  }
+
+  function handleSkip() {
+    if (leaving.current) {
+      return;
+    }
+    leaving.current = true;
+    saveAnswers({ avatar: AVATAR_NOT_INFORMED });
     navigation.navigate('Name');
   }
 
   return (
-    <ScreenLayout
-      step={1}
-      onBack={() => navigation.goBack()}
-      title="Escolha seu ninja"
-      subtitle="Ele vai acompanhar você nas próximas perguntas."
-      footer={<PrimaryButton title="Continuar" onPress={handleContinue} />}
-    >
-      {AVATAR_OPTIONS.map((option, index) => (
-        <PopIn key={option.id} index={index} selected={answers.avatar === option.id}>
-          <NinjaAnimation avatar={option.id} idle={answers.avatar === option.id} />
-          <OptionCard
-            label={option.label}
-            selected={answers.avatar === option.id}
-            onPress={() => handleSelect(option.id)}
-          />
-        </PopIn>
-      ))}
-      <FieldError message={error} />
-    </ScreenLayout>
+    <Background colors={[colors.gradientStart, colors.gradientEnd]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }}>
+      <Safe>
+        <Content>
+          <BackButton
+            onPress={() => navigation.goBack()}
+            activeOpacity={0.8}
+            accessibilityRole="button"
+            accessibilityLabel="Voltar"
+          >
+            <BackText>Voltar</BackText>
+          </BackButton>
+          <Stage>
+            {/* key troca a cada personagem: o PopIn remonta e a entrada roda de novo. */}
+            <PopIn key={option.id} selected={selected}>
+              <Card
+                onPress={() => handleSelect(option.id)}
+                activeOpacity={0.8}
+                $selected={selected}
+                accessibilityRole="button"
+                accessibilityLabel={option.label}
+                accessibilityState={{ selected }}
+              >
+                <CardImage source={IMAGES[option.id]} resizeMode="cover" accessibilityIgnoresInvertColors />
+                <LabelBar>
+                  <Label>{option.label}</Label>
+                </LabelBar>
+              </Card>
+              {/* Fora do Card, para tocar na seta não escolher o personagem. */}
+              <ArrowButton
+                onPress={handleToggle}
+                activeOpacity={0.8}
+                $side={isFirst ? 'right' : 'left'}
+                accessibilityRole="button"
+                accessibilityLabel={isFirst ? 'Ver personagem feminino' : 'Ver personagem masculino'}
+              >
+                <ArrowText>{isFirst ? '›' : '‹'}</ArrowText>
+              </ArrowButton>
+            </PopIn>
+          </Stage>
+          <PrimaryButton title="Prefiro não dizer" borderColor={colors.gradientEnd} onPress={handleSkip} />
+        </Content>
+      </Safe>
+    </Background>
   );
 }

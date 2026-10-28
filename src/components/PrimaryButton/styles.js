@@ -9,7 +9,12 @@ export const Button = styled.TouchableOpacity`
   justify-content: center;
   border-radius: ${radius.md}px;
   border-width: 2px;
-  border-color: ${(props) => (props.$variant === 'secondary' ? colors.primary : 'transparent')};
+  border-color: ${(props) => {
+    if (props.$borderColor) {
+      return props.$borderColor;
+    }
+    return props.$variant === 'secondary' ? colors.primary : 'transparent';
+  }};
   background-color: ${(props) => {
     if (props.$variant === 'secondary') {
       return 'transparent';
