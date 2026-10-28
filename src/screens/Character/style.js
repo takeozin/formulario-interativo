@@ -40,6 +40,26 @@ export const BackText = styled.Text`
   color: ${colors.ink};
 `;
 
+// Centraliza as duas colunas na altura que sobra entre o Voltar e o botão de baixo.
+export const Stage = styled.View`
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: ${spacing.md}px;
+  margin: ${spacing.lg}px 0;
+`;
+
+// Coluna de cada card: dimensiona via flex antes do PopIn aplicar seu width: 100%.
+export const Column = styled.View`
+  flex: 1;
+`;
+
+// Duas colunas lado a lado: cada card ocupa a coluna inteira (a largura vem
+// da Column; flex: 1 aqui zeraria a altura antes do aspect-ratio ser calculado).
+export const Card = styled.TouchableOpacity`
+  width: 100%;
+  aspect-ratio: 0.55;
 // Centraliza o card na altura que sobra entre o Voltar e o botão de baixo.
 export const Stage = styled.View`
   flex: 1;
