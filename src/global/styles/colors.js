@@ -15,4 +15,6 @@ export const colors = {
   disabled: '#766B89',
   gradientStart: '#2A0D45',
   gradientEnd: '#E58FD0',
+  // Vermelho da faixa de cabeça dos ninjas: destaque que combina com o roxo.
+  accent: '#F90D19',
 };
