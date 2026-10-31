@@ -3,6 +3,8 @@
 Espaço para a equipe alinhar as ideias de cada tela do formulário.
 Telas listadas na ordem do fluxo ([AppNavigator](src/navigation/AppNavigator.jsx)).
 
+teste de commit
+
 ---
 
 ## 1. Splash
