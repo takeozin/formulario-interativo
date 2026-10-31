@@ -8,6 +8,7 @@ import { AVATAR_NOT_INFORMED, AVATAR_OPTIONS } from '../../global/constants/form
 import { colors } from '../../global/styles/colors';
 import {
   Background,
+  BackgroundImage,
   BackButton,
   BackText,
   Card,
@@ -16,9 +17,12 @@ import {
   Content,
   Label,
   LabelBar,
+  Overlay,
   Safe,
   Stage,
 } from './style';
+
+const BACKGROUND_IMAGE = require('../../../assets/intro/fundo-inicio.png');
 
 const IMAGES = {
   ninja_male: require('../../../assets/ninja/ninja-masculino.jpeg'),
@@ -65,7 +69,9 @@ export default function CharacterScreen({ navigation }) {
   }
 
   return (
-    <Background colors={[colors.gradientStart, colors.gradientEnd]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }}>
+    <Background>
+      <BackgroundImage source={BACKGROUND_IMAGE} resizeMode="cover" />
+      <Overlay />
       <Safe>
         <Content>
           <BackButton

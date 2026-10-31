@@ -1,11 +1,32 @@
 import styled from 'styled-components/native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../global/styles/colors';
 import { MAX_CONTENT_WIDTH, MIN_TOUCH_SIZE, radius, spacing } from '../../global/styles/metrics';
 
-export const Background = styled(LinearGradient)`
+// Mesmo fundo do dojo da Splash e da Welcome.
+export const Background = styled.View`
   flex: 1;
+  background-color: ${colors.gradientStart};
+`;
+
+export const BackgroundImage = styled.Image`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+`;
+
+// Escurece o dojo para os cards e os botões terem contraste.
+export const Overlay = styled.View`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(21, 11, 36, 0.55);
 `;
 
 export const Safe = styled(SafeAreaView)`
