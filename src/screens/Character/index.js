@@ -106,7 +106,7 @@ export default function CharacterScreen({ navigation }) {
               );
             })}
           </Stage>
-          <PrimaryButton title="Prefiro não dizer" borderColor={colors.gradientEnd} onPress={handleSkip} />
+          <PrimaryButton title="Prefiro não dizer" borderColor={colors.accent} onPress={handleSkip} />
         </Content>
       </Safe>
     </Background>

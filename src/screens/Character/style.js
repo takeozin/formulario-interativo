@@ -84,7 +84,7 @@ export const Card = styled.TouchableOpacity`
   overflow: hidden;
   border-radius: ${radius.lg}px;
   border-width: 2px;
-  border-color: ${(props) => (props.$selected ? colors.gradientEnd : 'transparent')};
+  border-color: ${(props) => (props.$selected ? colors.accent : 'transparent')};
 `;
 
 // A imagem preenche o card (cover) e repete o arredondado de cima, descontada
