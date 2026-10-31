@@ -17,7 +17,7 @@ Trabalho da disciplina de Programação Mobile do curso de Engenharia de Softwar
 ## Tecnologias
 
 - React Native
-- Expo SDK 57
+- Expo SDK 58
 - React Navigation (native + native-stack)
 - styled-components
 - expo-sqlite
@@ -28,7 +28,7 @@ Trabalho da disciplina de Programação Mobile do curso de Engenharia de Softwar
 
 ## Como rodar
 
-Requisitos: Node.js instalado, app Expo Go compatível com o SDK 57, e computador e celular na mesma rede Wi-Fi.
+Requisitos: Node.js instalado, app Expo Go compatível com o SDK 58, e computador e celular na mesma rede Wi-Fi.
 
 ```bash
 npm install
