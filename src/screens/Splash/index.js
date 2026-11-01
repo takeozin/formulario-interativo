@@ -12,7 +12,7 @@ import {
   TitleWrapper,
 } from './styles';
 
-const BACKGROUND_IMAGE = require('../../../assets/intro/fundo-inicio.png');
+const BACKGROUND_IMAGE = require('../../../assets/intro/fundo-inicio.jpg');
 
 export default function SplashScreen({ navigation }) {
   return (

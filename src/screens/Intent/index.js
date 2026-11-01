@@ -31,7 +31,7 @@ import {
   Title,
 } from './style';
 
-const BACKGROUND_IMAGE = require('../../../assets/intro/fundo-inicio.png');
+const BACKGROUND_IMAGE = require('../../../assets/intro/fundo-inicio.jpg');
 
 const INTENT_ART = {
   casual_player: {

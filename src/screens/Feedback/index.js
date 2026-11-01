@@ -30,7 +30,7 @@ import {
 } from './style';
 
 const COMMENT_MAX_LENGTH = 300;
-const BACKGROUND_IMAGE = require('../../../assets/intro/fundo-inicio.png');
+const BACKGROUND_IMAGE = require('../../../assets/intro/fundo-inicio.jpg');
 const FEEDBACK_NINJA = require('../../../assets/feedback/ninja-feedback.png');
 
 // RF04 / RNF01 - Feedback qualitativo sobre a experiência na Arena Itinerante.

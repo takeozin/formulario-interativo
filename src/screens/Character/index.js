@@ -22,7 +22,7 @@ import {
   Stage,
 } from './style';
 
-const BACKGROUND_IMAGE = require('../../../assets/intro/fundo-inicio.png');
+const BACKGROUND_IMAGE = require('../../../assets/intro/fundo-inicio.jpg');
 
 const IMAGES = {
   ninja_male: require('../../../assets/ninja/ninja-masculino.jpeg'),

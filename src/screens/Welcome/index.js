@@ -31,7 +31,7 @@ import {
   Speaker,
 } from './style';
 
-const BACKGROUND_IMAGE = require('../../../assets/intro/fundo-inicio.png');
+const BACKGROUND_IMAGE = require('../../../assets/intro/fundo-inicio.jpg');
 const SENSEI_IMAGE = require('../../../assets/sensei/sensei.png');
 
 // Tela de boas-vindas e consentimento. O sensei explica, num balão de fala,
