@@ -11,6 +11,7 @@ export default function PrimaryButton({
   loading = false,
   disabled = false,
   borderColor,
+  labelColor,
 }) {
   const isDisabled = disabled || loading;
 
@@ -29,7 +30,7 @@ export default function PrimaryButton({
       {loading ? (
         <ActivityIndicator color={variant === 'secondary' ? colors.primary : colors.onPrimary} />
       ) : (
-        <Label $variant={variant}>{title}</Label>
+        <Label $variant={variant} $labelColor={labelColor}>{title}</Label>
       )}
     </Button>
   );

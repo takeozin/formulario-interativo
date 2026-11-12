@@ -6,7 +6,15 @@ import { Card, Description, Label, Radio, RadioDot, Texts } from './styles';
 // Com compact=true ocupa metade da largura, para montar grades de 2 colunas.
 // Com feedback=false o cartão não vibra sozinho: é para telas cuja animação
 // já dispara a própria vibração (ex.: o corte da tela Age), evitando vibrar duas vezes.
-export default function OptionCard({ label, description, selected = false, compact = false, feedback = true, onPress }) {
+export default function OptionCard({
+  label,
+  description,
+  selected = false,
+  compact = false,
+  feedback = true,
+  dark = false,
+  onPress,
+}) {
   function handlePress() {
     if (feedback) {
       selectionFeedback();
@@ -20,14 +28,15 @@ export default function OptionCard({ label, description, selected = false, compa
       activeOpacity={0.8}
       $selected={selected}
       $compact={compact}
+      $dark={dark}
       accessibilityRole="radio"
       accessibilityLabel={label}
       accessibilityState={{ selected }}
     >
-      <Radio $selected={selected}>{selected ? <RadioDot /> : null}</Radio>
+      <Radio $selected={selected} $dark={dark}>{selected ? <RadioDot $dark={dark} /> : null}</Radio>
       <Texts>
-        <Label>{label}</Label>
-        {description ? <Description>{description}</Description> : null}
+        <Label $dark={dark}>{label}</Label>
+        {description ? <Description $dark={dark}>{description}</Description> : null}
       </Texts>
     </Card>
   );

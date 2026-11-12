@@ -26,5 +26,5 @@ export const Button = styled.TouchableOpacity`
 export const Label = styled.Text`
   font-size: 18px;
   font-weight: 700;
-  color: ${(props) => (props.$variant === 'secondary' ? colors.primary : colors.onPrimary)};
+  color: ${(props) => props.$labelColor || (props.$variant === 'secondary' ? colors.primary : colors.onPrimary)};
 `;

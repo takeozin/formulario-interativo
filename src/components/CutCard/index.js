@@ -10,7 +10,7 @@ import { Blade, Clip, Wrapper } from './styles';
 // lâmina chega ao centro, que é o instante do corte. Por isso o OptionCard
 // de dentro não vibra sozinho (feedback=false): cada escolha vibra uma vez só.
 // Provisório: a lâmina é uma barra inclinada, até a arte ficar pronta.
-export default function CutCard({ label, selected = false, onPress }) {
+export default function CutCard({ label, selected = false, dark = false, onPress }) {
   const [width, setWidth] = useState(0);
   const { approach, follow, play } = useImpactAnimation({ approachMs: 140, followMs: 240 });
 
@@ -34,7 +34,7 @@ export default function CutCard({ label, selected = false, onPress }) {
 
   return (
     <Wrapper onLayout={(event) => setWidth(event.nativeEvent.layout.width)} style={{ transform: [{ scale: cardScale }] }}>
-      <OptionCard label={label} selected={selected} feedback={false} onPress={handlePress} />
+      <OptionCard label={label} selected={selected} dark={dark} feedback={false} onPress={handlePress} />
       <Clip
         pointerEvents="none"
         accessibilityElementsHidden
