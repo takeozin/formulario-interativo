@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel do estande · Arena Itinerante</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="config.js" defer></script>
+  <script src="auth.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <section class="login-screen" id="login-screen" aria-labelledby="login-title">
+    <div class="login-brand"><span class="login-mark">A<span>.</span></span><div><strong>ARENA ITINERANTE</strong><small>BEAST MARAGAMES</small></div></div>
+    <div class="login-card">
+      <p class="login-tag">PAINEL DA EQUIPE</p>
+      <h1 id="login-title">Bem-vindo de volta</h1>
+      <p class="login-subtitle">Entre para acompanhar a fila e as atividades do estande.</p>
+      <form id="login-form">
+        <label for="login-email">E-mail</label>
+        <input id="login-email" type="email" autocomplete="username" value="marcoaandre7@gmail.com" required>
+        <label for="login-password">Senha</label>
+        <input id="login-password" type="password" autocomplete="current-password" required>
+        <p id="login-error" class="login-error" role="alert" hidden></p>
+        <button id="login-submit" class="button button-primary login-submit" type="submit">Entrar no painel <span aria-hidden="true">→</span></button>
+      </form>
+      <p class="login-help">Acesso exclusivo para a equipe autorizada do evento.</p>
+    </div>
+    <p class="login-footer">ARENA ITINERANTE <span>·</span> BEAST MARAGAMES</p>
+  </section>
+  <header class="topbar" id="panel-header" hidden>
+    <a class="brand" href="#inicio" aria-label="Arena Itinerante, painel do estande"><span class="mark">A<span>.</span></span><span><strong>ARENA ITINERANTE</strong><small>BEAST MARAGAMES</small></span></a>
+    <div class="top-right"><span class="demo-dot"></span><span>Painel da equipe</span><span class="avatar" aria-hidden="true">A</span><span class="account">Equipe do estande<small>Visão do atendente</small></span><button type="button" class="logout" id="logout">Sair</button></div>
+  </header>
+
+  <main id="inicio" class="page" hidden>
+    <div class="page-heading"><div><div class="breadcrumb">ARENA ITINERANTE <span>/</span> OPERAÇÃO</div><h1>Painel do estande</h1><p>Acompanhe a fila e organize as próximas partidas.</p></div><div class="datebox"><span>Hoje</span><strong id="today"></strong></div></div>
+
+    <div class="demo-notice" role="status"><span class="notice-icon">i</span><p id="connection-status">Entre para consultar a fila.</p><button id="refresh" type="button">Atualizar</button></div>
+
+    <section class="summary" aria-label="Resumo da operação">
+      <div><span>Na fila</span><strong id="waiting-count">0</strong><small>Aguardando chamada</small></div>
+      <div><span>Chamados</span><strong id="called-count">0</strong><small>A caminho do estande</small></div>
+      <div><span>Jogando</span><strong id="playing-count">0 <i>/ 5</i></strong><small>Posições ocupadas</small></div>
+      <div><span>Finalizados</span><strong id="done-count">0</strong><small>Partidas concluídas</small></div>
+    </section>
+
+    <div class="workspace">
+      <section class="queue-panel" aria-labelledby="queue-title">
+        <div class="section-head"><div><h2 id="queue-title">Fila de espera <span class="count-pill" id="waiting-pill">0</span></h2><p>Uma fila para todos os jogos do estande.</p></div><button class="button button-primary" id="call-next">Chamar próximo <span aria-hidden="true">→</span></button></div>
+        <div class="table-wrap"><table><thead><tr><th>Senha</th><th>Participante</th><th>Espera</th><th>Situação</th></tr></thead><tbody id="queue-body"></tbody></table><div id="queue-empty" class="empty" hidden>Ninguém aguardando no momento.</div></div>
+        <div class="panel-foot"><span><span class="live-dot"></span> Fila compartilhada</span><span>As senhas seguem a ordem de chegada</span></div>
+      </section>
+      <aside class="side" aria-labelledby="side-title"><div class="side-header"><div><h2 id="side-title">Em atendimento</h2><p>Até cinco pessoas por vez.</p></div><span class="capacity" id="capacity">0 / 5</span></div><div id="active-list" class="active-list"></div><div class="side-note"><strong>Como funciona?</strong><p>Ao chegar, confirme a presença para iniciar os 20 minutos de jogo. Finalize a partida para liberar uma vaga.</p></div></aside>
+    </div>
+    <footer><span>ARENA ITINERANTE <b>·</b> BEAST MARAGAMES</span><span>Painel do atendente</span></footer>
+  </main>
+  <div class="toast" role="status" aria-live="polite" id="toast"></div>
+</body>
+</html>

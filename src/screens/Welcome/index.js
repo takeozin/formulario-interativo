@@ -112,7 +112,8 @@ export default function WelcomeScreen({ navigation }) {
                 <BubbleTitle accessibilityRole="header">Bem-vindo à Arena Itinerante, jovem ninja!</BubbleTitle>
                 <BubbleText>
                   São 5 perguntas rápidas, em cerca de 1 minuto. Vou guardar seu nome ou apelido, sua faixa de idade e
-                  suas respostas. A Beast Maragames usa isso só para entender quem participa dos eventos.
+                  suas respostas. A Beast Maragames usa isso para entender quem participa dos eventos. Se você escolher
+                  jogar, a equipe do estande também verá seu nome ou apelido para organizar a fila.
                 </BubbleText>
                 {expanded ? (
                   <>

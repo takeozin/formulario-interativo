@@ -20,6 +20,8 @@ function firstRow(data) {
     joinedAt: row.joined_at,
     calledAt: row.called_at,
     expiresAt: row.expires_at,
+    playEndsAt: row.play_ends_at,
+    clockOffset: row.server_time ? Date.parse(row.server_time) - Date.now() : 0,
     positionAhead: Number(row.position_ahead ?? 0),
   };
 }
@@ -77,4 +79,11 @@ export async function setGameQueueLearning(accessToken, wantsToLearn) {
   }
 
   return firstRow(data);
+}
+
+export async function cancelGameQueue(accessToken) {
+  if (!supabase) throw new Error('QUEUE_NOT_CONFIGURED');
+  const { data, error } = await supabase.rpc('cancel_game_queue', { p_access_token: accessToken });
+  if (error) throw error;
+  return data === true;
 }

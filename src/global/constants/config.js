@@ -4,7 +4,7 @@ export const TOTAL_STEPS = 5;
 
 // Versão do texto de autorização exibido na tela inicial. Sempre que o
 // texto mudar, aumente a versão: ela é gravada junto com cada resposta.
-export const CONSENT_VERSION = '1.0';
+export const CONSENT_VERSION = '1.1';
 
 // Plataforma de cursos de criação de jogos da Beast Maragames.
 export const EDUCATIONAL_URL = 'https://maragames.app/';

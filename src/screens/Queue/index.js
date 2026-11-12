@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Alert } from 'react-native';
+import { usePreventRemove } from '@react-navigation/native';
 import ScreenLayout from '../../components/ScreenLayout';
 import PrimaryButton from '../../components/PrimaryButton';
 import { useForm } from '../../contexts/FormContext';
-import { joinGameQueue, setGameQueueLearning } from '../../services/queueService';
+import { cancelGameQueue, joinGameQueue, setGameQueueLearning } from '../../services/queueService';
 import { prepareQueueNotifications } from '../../services/queueNotifications';
 
 import {
@@ -19,7 +21,7 @@ import {
 } from './style';
 
 // A fila será habilitada após a revisão e teste da integração compartilhada.
-const QUEUE_INTEGRATION_READY = false;
+const QUEUE_INTEGRATION_READY = process.env.EXPO_PUBLIC_QUEUE_ENABLED === 'true';
 
 function formatTimer(milliseconds) {
   const seconds = Math.max(0, Math.ceil(milliseconds / 1000));
@@ -31,7 +33,41 @@ export default function QueueScreen({ navigation, route }) {
   const { answers, queue, setQueue, startQueuePolling } = useForm();
   const [loading, setLoading] = useState(!queue);
   const [error, setError] = useState('');
+  const [learningError, setLearningError] = useState('');
+  const [savingLearning, setSavingLearning] = useState(false);
+  const [pendingExit, setPendingExit] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
   const [now, setNow] = useState(Date.now());
+
+  usePreventRemove(loading || ['waiting', 'called', 'playing'].includes(queue?.status), () => {
+    if (loading || !queue?.accessToken) {
+      Alert.alert('Aguarde', 'Estamos preparando sua inscrição na fila.');
+      return;
+    }
+    if (queue.status === 'playing') {
+      Alert.alert('Partida em andamento', 'Peça à equipe do estande para finalizar sua partida.');
+      return;
+    }
+    Alert.alert('Sair da fila?', 'Sua senha será cancelada e o formulário será reiniciado.', [
+      { text: 'Continuar na fila', style: 'cancel' },
+      { text: 'Sair da fila', style: 'destructive', onPress: async () => {
+        try {
+          if (!(await cancelGameQueue(queue.accessToken))) throw new Error('QUEUE_CHANGED');
+          setPendingExit(true);
+          setQueue({ ...queue, status: 'abandoned' });
+        } catch (_) {
+          Alert.alert('Não foi possível sair', 'Confira sua conexão ou peça ajuda à equipe do estande.');
+        }
+      } },
+    ]);
+  });
+
+  useEffect(() => {
+    if (pendingExit && queue?.status === 'abandoned') {
+      navigation.reset({ index: 0, routes: [{ name: 'Welcome' }] });
+      setPendingExit(null);
+    }
+  }, [navigation, pendingExit, queue?.status]);
 
   useEffect(() => {
     let active = true;
@@ -51,7 +87,11 @@ export default function QueueScreen({ navigation, route }) {
       try {
         setLoading(true);
         setError('');
-        await prepareQueueNotifications();
+        try {
+          await prepareQueueNotifications();
+        } catch (_) {
+          // A permissão de notificação não deve impedir a emissão da senha.
+        }
         const entry = await joinGameQueue({
           sessionId: answers.id,
           name: answers.name,
@@ -79,12 +119,13 @@ export default function QueueScreen({ navigation, route }) {
     return () => {
       active = false;
     };
-  }, [answers.id, answers.name, queue?.accessToken, setQueue, startQueuePolling]);
+  }, [answers.id, answers.name, queue?.accessToken, retryCount, setQueue, startQueuePolling]);
 
   useEffect(() => {
-    if (queue?.status !== 'called') {
+    if (queue?.status !== 'called' && queue?.status !== 'playing') {
       return undefined;
     }
+    setNow(Date.now());
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, [queue?.status]);
@@ -93,22 +134,28 @@ export default function QueueScreen({ navigation, route }) {
     if (!queue?.expiresAt) {
       return 0;
     }
-    return new Date(queue.expiresAt).getTime() - now;
-  }, [now, queue?.expiresAt]);
+    return new Date(queue.expiresAt).getTime() - (now + (queue.clockOffset || 0));
+  }, [now, queue?.expiresAt, queue?.clockOffset]);
 
-  function handleLearnToo() {
-    if (queue?.accessToken) {
-      setGameQueueLearning(queue.accessToken, true).catch((queueError) => {
-        console.warn('[Soulstar] Não foi possível registrar o interesse em aprender:', queueError);
-      });
-      setQueue({ ...queue, wantsToLearn: true });
+  async function handleLearnToo() {
+    if (!queue?.accessToken || savingLearning) return;
+    setSavingLearning(true);
+    setLearningError('');
+    try {
+      const updated = await setGameQueueLearning(queue.accessToken, true);
+      if (!updated) throw new Error('QUEUE_NOT_FOUND');
+      setQueue(updated);
+    } catch (queueError) {
+      setLearningError('Não conseguimos salvar seu interesse. Tente novamente.');
+    } finally {
+      setSavingLearning(false);
     }
   }
 
   function handleRetry() {
     setLoading(true);
     setError('');
-    navigation.replace('Queue', route.params);
+    setRetryCount((value) => value + 1);
   }
 
   if (loading) {
@@ -132,21 +179,27 @@ export default function QueueScreen({ navigation, route }) {
 
   const called = queue?.status === 'called' && remaining > 0;
   const expired = queue?.status === 'expired' || (queue?.status === 'called' && remaining <= 0);
+  const playing = queue?.status === 'playing';
+  const completed = queue?.status === 'completed';
+  const playRemaining = queue?.playEndsAt ? new Date(queue.playEndsAt).getTime() - (now + (queue.clockOffset || 0)) : 0;
 
   return (
     <ScreenLayout
       step={4}
       onBack={() => navigation.goBack()}
-      title={called ? 'É sua vez!' : expired ? 'Sua vaga expirou' : 'Você entrou na fila!'}
-      subtitle={called ? 'Chegue ao estande antes do tempo acabar.' : 'Fique de olho: vamos avisar quando sua senha for chamada.'}
+      title={called ? 'É sua vez!' : playing ? 'Hora de jogar!' : completed ? 'Partida finalizada!' : expired ? 'Sua vaga expirou' : 'Você entrou na fila!'}
+      subtitle={called ? 'Chegue ao estande antes do tempo acabar.' : playing ? 'Aproveite sua partida no estande.' : completed ? 'Agora conte para a gente como foi sua experiência.' : expired ? 'Fale com a equipe do estande para receber orientações.' : 'Mantenha o app aberto e acompanhe sua senha.'}
       footer={
         <FooterButtons>
-          <PrimaryButton
-            title={queue?.wantsToLearn ? 'Você também quer aprender' : 'Quero aprender também'}
-            onPress={handleLearnToo}
-            disabled={Boolean(queue?.wantsToLearn)}
-            variant="secondary"
-          />
+          {completed ? <PrimaryButton title="Continuar para o feedback" onPress={() => navigation.navigate('Feedback')} /> : (
+            <PrimaryButton
+              title={queue?.wantsToLearn ? 'Você também quer aprender' : 'Quero aprender também'}
+              onPress={handleLearnToo}
+              disabled={Boolean(queue?.wantsToLearn)}
+              loading={savingLearning}
+              variant="secondary"
+            />
+          )}
         </FooterButtons>
       }
     >
@@ -161,6 +214,10 @@ export default function QueueScreen({ navigation, route }) {
             <Timer>{formatTimer(remaining)}</Timer>
             <Status>para chegar ao estande.</Status>
           </>
+        ) : playing ? (
+          <><WaitingBadge>JOGANDO</WaitingBadge><Status>Tempo de jogo restante</Status><Timer>{formatTimer(playRemaining)}</Timer></>
+        ) : completed ? (
+          <Status>Partida encerrada pela equipe.</Status>
         ) : expired ? (
           <Status>Peça uma nova senha à equipe do estande.</Status>
         ) : (
@@ -170,7 +227,8 @@ export default function QueueScreen({ navigation, route }) {
           </>
         )}
       </Card>
-      <Hint>Não feche o aplicativo enquanto espera. Você pode bloquear o celular ou deixar o aplicativo em segundo plano.</Hint>
+      {learningError ? <ErrorText accessibilityRole="alert">{learningError}</ErrorText> : null}
+      <Hint>Para acompanhar a chamada, mantenha o aplicativo aberto. O aviso pode não chegar enquanto o celular estiver bloqueado ou o app em segundo plano.</Hint>
       <Hint>Cada rodada tem 20 minutos de jogo e até 5 minutos para o jogador chegar ao estande.</Hint>
     </ScreenLayout>
   );

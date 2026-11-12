@@ -43,6 +43,7 @@ export function FormProvider({ children }) {
   const [answers, setAnswers] = useState(INITIAL_ANSWERS);
   const queueRef = useRef(null);
   const queuePollingRef = useRef(null);
+  const queuePollingInFlightRef = useRef(false);
   const [queue, setQueueState] = useState(null);
 
   // Abre o banco já na inicialização, para o primeiro toque não esperar.
@@ -78,13 +79,14 @@ export function FormProvider({ children }) {
 
   const pollQueue = useCallback(async () => {
     const current = queueRef.current;
-    if (!current?.accessToken) {
+    if (!current?.accessToken || queuePollingInFlightRef.current) {
       return;
     }
 
+    queuePollingInFlightRef.current = true;
     try {
       const next = await getGameQueueStatus(current.accessToken);
-      if (!next) {
+      if (!next || queueRef.current !== current) {
         return;
       }
       setQueue(next);
@@ -93,6 +95,8 @@ export function FormProvider({ children }) {
       }
     } catch (error) {
       console.warn('[Soulstar] Não foi possível atualizar a fila:', error);
+    } finally {
+      queuePollingInFlightRef.current = false;
     }
   }, [setQueue]);
 
