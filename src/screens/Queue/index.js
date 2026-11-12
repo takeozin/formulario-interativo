@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Alert } from 'react-native';
 import { usePreventRemove } from '@react-navigation/native';
-import ScreenLayout from '../../components/ScreenLayout';
+import { StatusBar } from 'expo-status-bar';
+import PopIn from '../../components/PopIn';
 import PrimaryButton from '../../components/PrimaryButton';
 import { useForm } from '../../contexts/FormContext';
 import { cancelGameQueue, joinGameQueue, setGameQueueLearning } from '../../services/queueService';
@@ -9,16 +10,68 @@ import { prepareQueueNotifications } from '../../services/queueNotifications';
 
 import {
   Card,
+  Background,
+  BackgroundImage,
+  BackButton,
+  BackText,
+  Content,
   ErrorText,
+  Footer,
   FooterButtons,
+  Header,
+  Hero,
+  HeroCopy,
+  HeroLabel,
+  HeroText,
   Hint,
   Name,
+  NinjaFrame,
+  NinjaImage,
   Number,
   NumberLabel,
+  Overlay,
+  Progress,
+  Safe,
+  Scroll,
   Status,
+  Subtitle,
   Timer,
+  Tips,
+  TipsTitle,
+  Title,
   WaitingBadge,
 } from './style';
+
+const BACKGROUND_IMAGE = require('../../../assets/intro/fundo-inicio.jpg');
+const PLAYER_NINJA = require('../../../assets/intent/ninja-jogador.png');
+
+function QueueLayout({ title, subtitle, onBack, children, footer }) {
+  return (
+    <Background>
+      <StatusBar style="light" />
+      <BackgroundImage source={BACKGROUND_IMAGE} resizeMode="cover" />
+      <Overlay />
+      <Safe>
+        <Scroll>
+          <Content>
+            <Header>
+              {onBack ? (
+                <BackButton onPress={onBack} accessibilityRole="button" accessibilityLabel="Voltar">
+                  <BackText>Voltar</BackText>
+                </BackButton>
+              ) : null}
+              <Progress accessibilityLabel="Fila para jogar">Fila para jogar</Progress>
+            </Header>
+            <Title accessibilityRole="header">{title}</Title>
+            {subtitle ? <Subtitle>{subtitle}</Subtitle> : null}
+            {children}
+          </Content>
+        </Scroll>
+        {footer ? <Footer>{footer}</Footer> : null}
+      </Safe>
+    </Background>
+  );
+}
 
 // A fila será habilitada após a revisão e teste da integração compartilhada.
 const QUEUE_INTEGRATION_READY = process.env.EXPO_PUBLIC_QUEUE_ENABLED === 'true';
@@ -160,20 +213,20 @@ export default function QueueScreen({ navigation, route }) {
 
   if (loading) {
     return (
-      <ScreenLayout title="Preparando sua jornada..." subtitle="Estamos reservando seu lugar na fila." />
+      <QueueLayout title="Preparando sua jornada..." subtitle="Estamos reservando seu lugar na fila." />
     );
   }
 
   if (error) {
     return (
-      <ScreenLayout
+      <QueueLayout
         onBack={() => navigation.goBack()}
         title="A fila está temporariamente indisponível"
         subtitle="Sua resposta ainda não foi enviada para a fila de jogos."
         footer={<PrimaryButton title="Tentar novamente" onPress={handleRetry} />}
       >
         <ErrorText>{error}</ErrorText>
-      </ScreenLayout>
+      </QueueLayout>
     );
   }
 
@@ -184,8 +237,7 @@ export default function QueueScreen({ navigation, route }) {
   const playRemaining = queue?.playEndsAt ? new Date(queue.playEndsAt).getTime() - (now + (queue.clockOffset || 0)) : 0;
 
   return (
-    <ScreenLayout
-      step={4}
+    <QueueLayout
       onBack={() => navigation.goBack()}
       title={called ? 'É sua vez!' : playing ? 'Hora de jogar!' : completed ? 'Partida finalizada!' : expired ? 'Sua vaga expirou' : 'Você entrou na fila!'}
       subtitle={called ? 'Chegue ao estande antes do tempo acabar.' : playing ? 'Aproveite sua partida no estande.' : completed ? 'Agora conte para a gente como foi sua experiência.' : expired ? 'Fale com a equipe do estande para receber orientações.' : 'Mantenha o app aberto e acompanhe sua senha.'}
@@ -197,13 +249,22 @@ export default function QueueScreen({ navigation, route }) {
               onPress={handleLearnToo}
               disabled={Boolean(queue?.wantsToLearn)}
               loading={savingLearning}
-              variant="secondary"
             />
           )}
         </FooterButtons>
       }
     >
-      <Card $called={called} $expired={expired}>
+      <Hero>
+        <NinjaFrame>
+          <NinjaImage source={PLAYER_NINJA} resizeMode="cover" accessibilityIgnoresInvertColors accessible accessibilityLabel="Ninja segurando um controle de videogame" />
+        </NinjaFrame>
+        <HeroCopy>
+          <HeroLabel>Arena Itinerante</HeroLabel>
+          <HeroText>{called ? 'Sua missão começa agora!' : playing ? 'Aproveite o jogo, ninja!' : completed ? 'Missão cumprida!' : expired ? 'Sua equipe pode ajudar.' : 'Seu lugar na aventura está reservado!'}</HeroText>
+        </HeroCopy>
+      </Hero>
+      <PopIn>
+      <Card $called={called} $expired={expired} accessibilityLiveRegion="polite">
         <NumberLabel>Sua senha</NumberLabel>
         <Number>{queue?.ticketNumber ? String(queue.ticketNumber).padStart(2, '0') : '--'}</Number>
         <Name>{answers.name}</Name>
@@ -227,9 +288,13 @@ export default function QueueScreen({ navigation, route }) {
           </>
         )}
       </Card>
+      </PopIn>
       {learningError ? <ErrorText accessibilityRole="alert">{learningError}</ErrorText> : null}
-      <Hint>Para acompanhar a chamada, mantenha o aplicativo aberto. O aviso pode não chegar enquanto o celular estiver bloqueado ou o app em segundo plano.</Hint>
-      <Hint>Cada rodada tem 20 minutos de jogo e até 5 minutos para o jogador chegar ao estande.</Hint>
-    </ScreenLayout>
+      <Tips>
+        <TipsTitle>Enquanto espera</TipsTitle>
+        <Hint>Para acompanhar a chamada, mantenha o aplicativo aberto. O aviso pode não chegar enquanto o celular estiver bloqueado ou o app em segundo plano.</Hint>
+        <Hint>Cada rodada tem 20 minutos de jogo e até 5 minutos para o jogador chegar ao estande.</Hint>
+      </Tips>
+    </QueueLayout>
   );
 }
