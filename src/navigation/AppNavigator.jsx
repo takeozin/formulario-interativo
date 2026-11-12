@@ -8,12 +8,13 @@ import CharacterScreen from '../screens/Character';
 import NameScreen from '../screens/Name';
 import AgeScreen from '../screens/Age';
 import IntentScreen from '../screens/Intent';
+import QueueScreen from '../screens/Queue';
 import FeedbackScreen from '../screens/Feedback';
 import DoneScreen from '../screens/Done';
 
 const Stack = createNativeStackNavigator();
 
-// Fluxo: Splash -> Welcome -> Character -> Name -> Age -> Intent -> Feedback -> Done.
+// Fluxo de jogo: Intent -> Queue -> Feedback -> Done.
 // O cabeçalho padrão fica desligado: cada tela desenha o próprio (ProgressHeader).
 export default function AppNavigator() {
   return (
@@ -25,6 +26,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Name" component={NameScreen} />
         <Stack.Screen name="Age" component={AgeScreen} />
         <Stack.Screen name="Intent" component={IntentScreen} />
+        <Stack.Screen name="Queue" component={QueueScreen} />
         <Stack.Screen name="Feedback" component={FeedbackScreen} />
         <Stack.Screen name="Done" component={DoneScreen} />
       </Stack.Navigator>

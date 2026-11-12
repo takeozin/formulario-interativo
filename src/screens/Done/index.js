@@ -8,9 +8,9 @@ import { EDUCATIONAL_URL } from '../../global/constants/config';
 import { InviteCard, InviteText, InviteTitle } from './style';
 
 export default function DoneScreen({ navigation }) {
-  const { answers } = useForm();
+  const { answers, queue } = useForm();
   const [linkError, setLinkError] = useState('');
-  const wantsToLearn = answers.intent === 'wants_to_learn';
+  const wantsToLearn = answers.intent === 'wants_to_learn' || queue?.wantsToLearn;
 
   async function handleOpenPlatform() {
     try {

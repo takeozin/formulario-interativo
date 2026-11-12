@@ -61,7 +61,7 @@ export default function IntentScreen({ navigation }) {
       setError('Escolha um caminho para continuar.');
       return;
     }
-    navigation.navigate('Feedback');
+    navigation.navigate(answers.intent === 'casual_player' ? 'Queue' : 'Feedback');
   }
 
   return (

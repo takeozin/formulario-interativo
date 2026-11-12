@@ -3,6 +3,8 @@ import * as Crypto from 'expo-crypto';
 import { CONSENT_VERSION } from '../global/constants/config';
 import { getDatabase } from '../services/database';
 import { deleteResponse, saveResponse } from '../services/responseRepository';
+import { getGameQueueStatus, QUEUE_POLL_INTERVAL_MS } from '../services/queueService';
+import { notifyQueueTurn } from '../services/queueNotifications';
 import { syncPendingResponses } from '../services/syncService';
 
 const FormContext = createContext(null);
@@ -39,6 +41,9 @@ export function FormProvider({ children }) {
   // não sobrescreverem um ao outro. O state serve só para redesenhar a tela.
   const answersRef = useRef(INITIAL_ANSWERS);
   const [answers, setAnswers] = useState(INITIAL_ANSWERS);
+  const queueRef = useRef(null);
+  const queuePollingRef = useRef(null);
+  const [queue, setQueueState] = useState(null);
 
   // Abre o banco já na inicialização, para o primeiro toque não esperar.
   useEffect(() => {
@@ -57,8 +62,57 @@ export function FormProvider({ children }) {
   // Limpa a memória para o próximo visitante (não apaga o que já foi gravado).
   const resetSession = useCallback(() => {
     answersRef.current = INITIAL_ANSWERS;
+    if (queuePollingRef.current) {
+      clearInterval(queuePollingRef.current);
+      queuePollingRef.current = null;
+    }
     setAnswers(INITIAL_ANSWERS);
+    queueRef.current = null;
+    setQueueState(null);
   }, []);
+
+  const setQueue = useCallback((next) => {
+    queueRef.current = next;
+    setQueueState(next);
+  }, []);
+
+  const pollQueue = useCallback(async () => {
+    const current = queueRef.current;
+    if (!current?.accessToken) {
+      return;
+    }
+
+    try {
+      const next = await getGameQueueStatus(current.accessToken);
+      if (!next) {
+        return;
+      }
+      setQueue(next);
+      if (current.status !== 'called' && next.status === 'called') {
+        notifyQueueTurn({ name: answersRef.current.name, ticketNumber: next.ticketNumber });
+      }
+    } catch (error) {
+      console.warn('[Soulstar] Não foi possível atualizar a fila:', error);
+    }
+  }, [setQueue]);
+
+  const startQueuePolling = useCallback(() => {
+    if (queuePollingRef.current || !queueRef.current?.accessToken) {
+      return;
+    }
+
+    pollQueue();
+    queuePollingRef.current = setInterval(pollQueue, QUEUE_POLL_INTERVAL_MS);
+  }, [pollQueue]);
+
+  useEffect(
+    () => () => {
+      if (queuePollingRef.current) {
+        clearInterval(queuePollingRef.current);
+      }
+    },
+    []
+  );
 
   // Começa uma resposta nova, já com a autorização registrada.
   const startSession = useCallback(
@@ -106,8 +160,18 @@ export function FormProvider({ children }) {
   }, [resetSession]);
 
   const value = useMemo(
-    () => ({ answers, startSession, saveAnswers, finishSession, discardSession, resetSession }),
-    [answers, startSession, saveAnswers, finishSession, discardSession, resetSession]
+    () => ({
+      answers,
+      startSession,
+      saveAnswers,
+      finishSession,
+      discardSession,
+      resetSession,
+      queue,
+      setQueue,
+      startQueuePolling,
+    }),
+    [answers, startSession, saveAnswers, finishSession, discardSession, resetSession, queue, setQueue, startQueuePolling]
   );
 
   return <FormContext.Provider value={value}>{children}</FormContext.Provider>;
