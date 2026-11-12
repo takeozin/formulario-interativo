@@ -46,11 +46,28 @@ export function AdminLoginScreen({ navigation }) {
     </View></ScrollView></KeyboardAvoidingView></SafeAreaView>;
 }
 
-function Chart({ title, options, values, total }) {
-  return <View style={s.card}><Text style={s.cardTitle}>{title}</Text>{options.filter(([key]) => key !== 'unknown' || Number(values?.[key] || 0) > 0).map(([key, label]) => {
-    const n = Number(values?.[key] || 0); const pct = total ? Math.round(n * 100 / total) : 0;
-    return <View key={key} style={s.chartRow} accessibilityLabel={`${label}: ${n}, ${pct} por cento`}><View style={s.rowBetween}><Text style={s.body}>{label}</Text><Text style={s.bodyStrong}>{n} · {pct}%</Text></View><View style={s.track}><View style={[s.fill, { width: `${pct}%` }]} /></View></View>;
-  })}</View>;
+function Chart({ title, description, options, values, total, color = '#7650c9', note }) {
+  const rows = options.filter(([key]) => key !== 'unknown' || Number(values?.[key] || 0) > 0);
+  return (
+    <View style={charts.card}>
+      <Text accessibilityRole="header" style={charts.title}>{title}</Text>
+      <Text style={charts.description}>{description}</Text>
+      {total > 0 ? rows.map(([key, label]) => {
+        const n = Number(values?.[key] || 0);
+        const pct = Math.round(n * 100 / total);
+        return (
+          <View key={key} style={s.chartRow} accessible accessibilityLabel={`${label}: ${n} ${n === 1 ? 'resposta' : 'respostas'}, ${pct} por cento`}>
+            <View style={charts.heading}>
+              <Text style={charts.label}>{label}</Text>
+              <View style={charts.numbers}><Text style={charts.count}>{n}</Text><Text style={charts.percent}>{pct}%</Text></View>
+            </View>
+            <View style={s.track}><View style={[s.fill, { width: `${pct}%`, backgroundColor: color }]} /></View>
+          </View>
+        );
+      }) : <Text style={charts.empty}>Ainda não há dados para exibir neste período.</Text>}
+      {!!note && <Text style={charts.note}>{note}</Text>}
+    </View>
+  );
 }
 
 export function AdminPanelScreen({ navigation }) {
@@ -92,8 +109,34 @@ export function AdminPanelScreen({ navigation }) {
     <View style={s.card}><Text style={s.cardTitle}>Em atendimento · {active.length} / 5</Text>{!active.length && <Text style={s.muted}>Nenhuma pessoa em atendimento.</Text>}{active.map((p) => <View key={p.id} style={s.person}><View style={s.rowBetween}><Text style={s.bodyStrong}>{ticket(p.ticket_number)}  {p.participant_name}</Text><Text style={s.link}>{p.status === 'called' ? 'Chamado' : 'Jogando'}</Text></View><Text style={s.muted}>{p.status === 'called' ? 'Tempo para chegar' : 'Tempo de jogo'}: {remaining(p)}</Text><Button secondary title={p.status === 'called' ? 'Confirmar chegada' : 'Finalizar partida'} onPress={() => action(p.status === 'called' ? 'start' : 'finish', p.id)} disabled={busy || !connected} />{p.status === 'called' && <Button secondary title="Não compareceu" onPress={() => action('absent', p.id)} disabled={busy || !connected} />}</View>)}</View>
     <Text style={s.sectionTitle}>Resultados do formulário</Text><Text style={s.muted}>Respostas concluídas e sincronizadas. Sem filtro, inclui todos os períodos e testes.</Text>
     <View style={s.card}><Text style={s.label}>De (AAAA-MM-DD)</Text><TextInput style={s.input} value={start} onChangeText={setStart} placeholder="Ex.: 2026-11-01" accessibilityLabel="Data inicial, ano mês dia" /><Text style={s.label}>Até (AAAA-MM-DD)</Text><TextInput style={s.input} value={end} onChangeText={setEnd} placeholder="Ex.: 2026-11-30" accessibilityLabel="Data final, ano mês dia" /><Button title="Aplicar período" onPress={() => loadReport(start, end)} /><Button secondary title="Todo o período" onPress={() => { setStart(''); setEnd(''); loadReport('', ''); }} /></View>
-    {!!reportError && <Text accessibilityLiveRegion="polite" style={s.muted}>{reportError}</Text>}{report && <><View style={s.metrics}><View style={s.metric}><Text style={s.muted}>Respostas concluídas</Text><Text style={s.number}>{report.total || 0}</Text></View><View style={s.metric}><Text style={s.muted}>Nota média</Text><Text style={s.number}>{report.rating_count ? `${Number(report.average_rating).toFixed(1).replace('.', ',')} / 5` : '—'}</Text><Text style={s.muted}>{report.rating_count || 0} avaliações</Text></View></View><Chart title="Faixa etária" options={ages} values={report.ages} total={Number(report.total)} /><Chart title="Interesse principal" options={intents} values={report.intents} total={Number(report.total)} /><Text style={s.muted}>Quem escolheu jogar e depois aprender permanece em “Quero jogar” nesta pergunta.</Text><Chart title="Avaliações" options={ratings} values={report.ratings} total={Number(report.rating_count)} /></>}
+    {!!reportError && <Text accessibilityLiveRegion="polite" style={s.muted}>{reportError}</Text>}
+    {report && <>
+      <View style={s.metrics}>
+        <View style={[s.metric, charts.metric]}><Text style={s.muted}>Respostas concluídas</Text><Text style={charts.reportNumber}>{report.total || 0}</Text><Text style={charts.caption}>No período selecionado</Text></View>
+        <View style={[s.metric, charts.metric]}><Text style={s.muted}>Nota média</Text><Text style={[charts.reportNumber, charts.ratingNumber]}>{report.rating_count ? `${Number(report.average_rating).toFixed(1).replace('.', ',')} / 5` : '—'}</Text><Text style={charts.caption}>{report.rating_count || 0} {Number(report.rating_count) === 1 ? 'avaliação' : 'avaliações'}</Text></View>
+      </View>
+      <Chart title="Faixa etária" description="Distribuição das pessoas participantes" options={ages} values={report.ages} total={Number(report.total)} />
+      <Chart title="Interesse principal" description="O caminho escolhido no formulário" options={intents} values={report.intents} total={Number(report.total)} color="#ba4263" note="Quem escolheu jogar e depois aprender permanece em ‘Quero jogar’ nesta pergunta." />
+      <Chart title="Avaliações" description="Distribuição das notas recebidas" options={ratings} values={report.ratings} total={Number(report.rating_count)} color="#ad641f" />
+    </>}
   </ScrollView></SafeAreaView>;
 }
+
+const charts = StyleSheet.create({
+  card: { backgroundColor: '#fff', borderRadius: 16, padding: 20, marginVertical: 8, borderWidth: 1, borderColor: '#e8e2e9' },
+  title: { color: '#25172e', fontSize: 19, fontWeight: '800' },
+  description: { color: '#6e5c73', fontSize: 13, lineHeight: 19, marginTop: 5, marginBottom: 6 },
+  heading: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
+  label: { color: '#514356', fontSize: 14, flexShrink: 1 },
+  numbers: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  count: { color: '#6e5c73', fontSize: 13 },
+  percent: { color: '#25172e', fontWeight: '800', fontSize: 14, minWidth: 40, textAlign: 'right' },
+  empty: { color: '#6e5c73', fontSize: 14, lineHeight: 21, marginTop: 18 },
+  note: { color: '#6e5c73', fontSize: 12, lineHeight: 18, marginTop: 20, paddingTop: 14, borderTopWidth: 1, borderTopColor: '#eeeaf1' },
+  metric: { backgroundColor: '#f0eafa', borderColor: '#e5daf4' },
+  reportNumber: { color: '#5f37ad', fontSize: 27, fontWeight: '800', marginTop: 8 },
+  ratingNumber: { color: '#a84558' },
+  caption: { color: '#6e5c73', fontSize: 12, lineHeight: 17, marginTop: 4 },
+});
 
 const s = StyleSheet.create({ safe: { flex: 1, backgroundColor: '#24132f' }, flex: { flex: 1 }, loginContent: { flexGrow: 1, justifyContent: 'center', padding: 24 }, brand: { color: '#d9c9e8', fontWeight: '800', letterSpacing: 1, marginBottom: 28 }, loginTitle: { color: '#fff', fontSize: 30, fontWeight: '800' }, loginSubtitle: { color: '#e0d4e9', marginTop: 8, marginBottom: 24 }, panelSafe: { flex: 1, backgroundColor: '#f7f5f2' }, panel: { padding: 20, paddingBottom: 48, maxWidth: 680, width: '100%', alignSelf: 'center' }, brandDark: { color: '#5f37ad', fontWeight: '800', letterSpacing: 1 }, title: { color: '#25172e', fontSize: 30, fontWeight: '800', marginTop: 24, marginBottom: 6 }, sectionTitle: { color: '#25172e', fontSize: 23, fontWeight: '800', marginTop: 20, marginBottom: 8 }, card: { backgroundColor: '#fff', borderRadius: 14, padding: 18, marginVertical: 10, borderWidth: 1, borderColor: '#e8e2e9' }, cardTitle: { color: '#25172e', fontWeight: '800', fontSize: 18, marginBottom: 8 }, label: { color: '#25172e', fontWeight: '700', marginBottom: 7, marginTop: 8 }, input: { minHeight: 50, borderWidth: 1, borderColor: '#d8cfdd', borderRadius: 9, paddingHorizontal: 12, marginBottom: 12, color: '#25172e', backgroundColor: '#fff' }, button: { minHeight: 48, backgroundColor: '#7650c9', borderRadius: 9, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 12, marginVertical: 5 }, secondary: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#d8cfdd' }, disabled: { opacity: 0.45 }, buttonText: { color: '#fff', fontWeight: '800', textAlign: 'center' }, secondaryText: { color: '#5f37ad' }, error: { color: '#a31c37', marginBottom: 10 }, muted: { color: '#6e5c73', lineHeight: 20, fontSize: 13 }, body: { color: '#514356', fontSize: 13 }, bodyStrong: { color: '#25172e', fontWeight: '700', fontSize: 14 }, link: { color: '#6540ac', fontWeight: '800' }, notice: { backgroundColor: '#eee8fa', padding: 15, borderRadius: 12, marginTop: 20 }, metrics: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 10 }, metric: { width: '48.5%', backgroundColor: '#fff', borderWidth: 1, borderColor: '#e8e2e9', borderRadius: 12, padding: 15, marginBottom: 10 }, number: { fontSize: 25, fontWeight: '800', color: '#6540ac', marginTop: 5 }, rowBetween: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 }, person: { paddingVertical: 14, borderTopWidth: 1, borderColor: '#eeeaf0', gap: 7 }, chartRow: { marginTop: 15 }, track: { height: 9, borderRadius: 5, backgroundColor: '#eeeaf1', overflow: 'hidden', marginTop: 7 }, fill: { height: '100%', backgroundColor: '#7650c9', borderRadius: 5 } });
