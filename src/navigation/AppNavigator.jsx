@@ -11,6 +11,7 @@ import IntentScreen from '../screens/Intent';
 import QueueScreen from '../screens/Queue';
 import FeedbackScreen from '../screens/Feedback';
 import DoneScreen from '../screens/Done';
+import { AdminLoginScreen, AdminPanelScreen } from '../screens/Admin';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,8 @@ export default function AppNavigator() {
       <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
+        <Stack.Screen name="AdminLogin" component={AdminLoginScreen} />
+        <Stack.Screen name="AdminPanel" component={AdminPanelScreen} />
         <Stack.Screen name="Character" component={CharacterScreen} />
         <Stack.Screen name="Name" component={NameScreen} />
         <Stack.Screen name="Age" component={AgeScreen} />

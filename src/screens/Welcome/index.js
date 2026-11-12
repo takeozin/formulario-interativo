@@ -105,6 +105,9 @@ export default function WelcomeScreen({ navigation }) {
       <Safe>
         <Scroll>
           <Content>
+            <ReadMore onPress={() => navigation.navigate('AdminLogin')} accessibilityRole="button" accessibilityLabel="Acesso da equipe">
+              <ReadMoreText style={{ color: '#fff' }}>Acesso da equipe</ReadMoreText>
+            </ReadMore>
             <BubbleWrap style={bubbleStyle}>
               <BubbleShadow />
               <Bubble>
