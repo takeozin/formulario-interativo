@@ -24,7 +24,7 @@ export const Overlay = styled.View`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(21, 11, 36, 0.68);
+  background-color: rgba(21, 11, 36, 0.78);
 `;
 
 export const Safe = styled(SafeAreaView)`
