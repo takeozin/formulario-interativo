@@ -8,53 +8,208 @@
   <script src="config.js" defer></script>
   <script src="auth.js" defer></script>
   <script src="app.js" defer></script>
+  <script src="results.js" defer></script>
 </head>
 <body>
   <section class="login-screen" id="login-screen" aria-labelledby="login-title">
-    <div class="login-brand"><span class="login-mark">A<span>.</span></span><div><strong>ARENA ITINERANTE</strong><small>BEAST MARAGAMES</small></div></div>
+    <div class="login-brand">
+      <span class="login-mark" aria-hidden="true">A<span>.</span></span>
+      <div>
+        <strong>ARENA ITINERANTE</strong>
+        <small>BEAST MARAGAMES</small>
+      </div>
+    </div>
+
     <div class="login-card">
-      <p class="login-tag">PAINEL DA EQUIPE</p>
       <h1 id="login-title">Bem-vindo de volta</h1>
       <p class="login-subtitle">Entre para acompanhar a fila e as atividades do estande.</p>
+
       <form id="login-form">
         <label for="login-email">E-mail</label>
         <input id="login-email" type="email" autocomplete="username" value="marcoaandre7@gmail.com" required>
         <label for="login-password">Senha</label>
         <input id="login-password" type="password" autocomplete="current-password" required>
         <p id="login-error" class="login-error" role="alert" hidden></p>
-        <button id="login-submit" class="button button-primary login-submit" type="submit">Entrar no painel <span aria-hidden="true">→</span></button>
+        <button id="login-submit" class="button button-primary login-submit" type="submit">
+          Entrar no painel <span aria-hidden="true">→</span>
+        </button>
       </form>
+
       <p class="login-help">Acesso exclusivo para a equipe autorizada do evento.</p>
     </div>
+
     <p class="login-footer">ARENA ITINERANTE <span>·</span> BEAST MARAGAMES</p>
   </section>
+
   <header class="topbar" id="panel-header" hidden>
-    <a class="brand" href="#inicio" aria-label="Arena Itinerante, painel do estande"><span class="mark">A<span>.</span></span><span><strong>ARENA ITINERANTE</strong><small>BEAST MARAGAMES</small></span></a>
-    <div class="top-right"><span class="demo-dot"></span><span>Painel da equipe</span><span class="avatar" aria-hidden="true">A</span><span class="account">Equipe do estande<small>Visão do atendente</small></span><button type="button" class="logout" id="logout">Sair</button></div>
+    <div class="topbar-inner">
+      <a class="brand" href="#inicio" aria-label="Arena Itinerante, painel do estande">
+        <span class="mark" aria-hidden="true">A<span>.</span></span>
+        <span>
+          <strong>ARENA ITINERANTE</strong>
+          <small>BEAST MARAGAMES</small>
+        </span>
+      </a>
+
+      <div class="top-right">
+        <span class="live-status"><span class="demo-dot"></span> Operação ao vivo</span>
+        <span class="avatar" aria-hidden="true">A</span>
+        <span class="account">Equipe do estande<small>Visão do atendente</small></span>
+        <button type="button" class="logout" id="logout">Sair</button>
+      </div>
+    </div>
   </header>
 
-  <main id="inicio" class="page" hidden>
-    <div class="page-heading"><div><div class="breadcrumb">ARENA ITINERANTE <span>/</span> OPERAÇÃO</div><h1>Painel do estande</h1><p>Acompanhe a fila e organize as próximas partidas.</p></div><div class="datebox"><span>Hoje</span><strong id="today"></strong></div></div>
+  <main id="inicio" class="page" hidden tabindex="-1">
+    <div class="page-heading">
+      <div>
+        <div class="breadcrumb">ARENA ITINERANTE <span>/</span> OPERAÇÃO</div>
+        <h1>Painel do estande</h1>
+        <p>Acompanhe a fila e organize as próximas partidas.</p>
+      </div>
+      <div class="datebox">
+        <span>Hoje</span>
+        <strong id="today"></strong>
+      </div>
+    </div>
 
-    <div class="demo-notice" role="status"><span class="notice-icon">i</span><p id="connection-status">Entre para consultar a fila.</p><button id="refresh" type="button">Atualizar</button></div>
+    <div class="demo-notice" role="status">
+      <span class="notice-icon" aria-hidden="true">i</span>
+      <div class="notice-copy">
+        <strong>Status da fila</strong>
+        <p id="connection-status">Entre para consultar a fila.</p>
+      </div>
+      <button id="refresh" type="button">Atualizar</button>
+    </div>
 
     <section class="summary" aria-label="Resumo da operação">
-      <div><span>Na fila</span><strong id="waiting-count">0</strong><small>Aguardando chamada</small></div>
-      <div><span>Chamados</span><strong id="called-count">0</strong><small>A caminho do estande</small></div>
-      <div><span>Jogando</span><strong id="playing-count">0 <i>/ 5</i></strong><small>Posições ocupadas</small></div>
-      <div><span>Finalizados</span><strong id="done-count">0</strong><small>Partidas concluídas</small></div>
+      <div class="stat-card stat-waiting">
+        <span>Na fila</span>
+        <strong id="waiting-count">0</strong>
+        <small>Aguardando chamada</small>
+      </div>
+      <div class="stat-card stat-called">
+        <span>Chamados</span>
+        <strong id="called-count">0</strong>
+        <small>A caminho do estande</small>
+      </div>
+      <div class="stat-card stat-playing">
+        <span>Jogando</span>
+        <strong id="playing-count">0 <i>/ 5</i></strong>
+        <small>Posições ocupadas</small>
+      </div>
+      <div class="stat-card stat-done">
+        <span>Finalizados</span>
+        <strong id="done-count">0</strong>
+        <small>Partidas concluídas</small>
+      </div>
     </section>
 
     <div class="workspace">
       <section class="queue-panel" aria-labelledby="queue-title">
-        <div class="section-head"><div><h2 id="queue-title">Fila de espera <span class="count-pill" id="waiting-pill">0</span></h2><p>Uma fila para todos os jogos do estande.</p></div><button class="button button-primary" id="call-next">Chamar próximo <span aria-hidden="true">→</span></button></div>
-        <div class="table-wrap"><table><thead><tr><th>Senha</th><th>Participante</th><th>Espera</th><th>Situação</th></tr></thead><tbody id="queue-body"></tbody></table><div id="queue-empty" class="empty" hidden>Ninguém aguardando no momento.</div></div>
-        <div class="panel-foot"><span><span class="live-dot"></span> Fila compartilhada</span><span>As senhas seguem a ordem de chegada</span></div>
+        <div class="section-head">
+          <div>
+            <h2 id="queue-title">Fila de espera <span class="count-pill" id="waiting-pill">0</span></h2>
+            <p>Uma fila para todos os jogos do estande.</p>
+          </div>
+          <button class="button button-primary" id="call-next" type="button">
+            Chamar próximo <span aria-hidden="true">→</span>
+          </button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Senha</th><th>Participante</th><th>Espera</th><th>Situação</th></tr>
+            </thead>
+            <tbody id="queue-body"></tbody>
+          </table>
+          <div id="queue-empty" class="empty" hidden>Ninguém aguardando no momento.</div>
+        </div>
+
+        <div class="panel-foot">
+          <span><span class="live-dot"></span> Fila compartilhada</span>
+          <span>As senhas seguem a ordem de chegada</span>
+        </div>
       </section>
-      <aside class="side" aria-labelledby="side-title"><div class="side-header"><div><h2 id="side-title">Em atendimento</h2><p>Até cinco pessoas por vez.</p></div><span class="capacity" id="capacity">0 / 5</span></div><div id="active-list" class="active-list"></div><div class="side-note"><strong>Como funciona?</strong><p>Ao chegar, confirme a presença para iniciar os 20 minutos de jogo. Finalize a partida para liberar uma vaga.</p></div></aside>
+
+      <aside class="side" aria-labelledby="side-title">
+        <div class="side-header">
+          <div>
+            <h2 id="side-title">Em atendimento</h2>
+            <p>Até cinco pessoas por vez.</p>
+          </div>
+          <span class="capacity" id="capacity">0 / 5</span>
+        </div>
+        <div id="active-list" class="active-list"></div>
+        <div class="side-note">
+          <strong>Como funciona?</strong>
+          <p>Ao chegar, confirme a presença para iniciar os 20 minutos de jogo. Finalize a partida para liberar uma vaga.</p>
+        </div>
+      </aside>
     </div>
-    <footer><span>ARENA ITINERANTE <b>·</b> BEAST MARAGAMES</span><span>Painel do atendente</span></footer>
+
+    <section class="reports" aria-labelledby="reports-title">
+      <div class="reports-heading">
+        <div>
+          <h2 id="reports-title">Resultados do formulário</h2>
+          <p>Entenda quem participou e como foi a experiência na Arena.</p>
+        </div>
+        <span class="report-tag">Dados agregados</span>
+      </div>
+
+      <form class="report-filters" id="report-filters">
+        <div class="filter-title">Período analisado</div>
+        <label>De <input type="date" id="report-start"></label>
+        <label>Até <input type="date" id="report-end"></label>
+        <button class="button button-primary" type="submit" id="report-submit">Aplicar período</button>
+        <button class="button button-secondary" type="button" id="report-clear">Todo o período</button>
+      </form>
+
+      <p class="report-note">Contabiliza respostas concluídas e sincronizadas. Sem filtro, inclui todos os eventos e testes registrados.</p>
+      <p id="report-message" class="report-message" role="status">Entre para carregar os resultados.</p>
+
+      <div id="report-content" hidden>
+        <div class="report-summary">
+          <div class="report-stat report-stat-total">
+            <span>Respostas concluídas</span>
+            <strong id="report-total">0</strong>
+            <small>No período selecionado</small>
+          </div>
+          <div class="report-stat report-stat-rating">
+            <span>Nota média</span>
+            <strong id="report-average">—</strong>
+            <small id="report-rating-count">Nenhuma avaliação</small>
+          </div>
+        </div>
+
+        <div class="chart-grid">
+          <section class="chart-panel chart-panel-age">
+            <div class="chart-panel-heading"><h3>Faixa etária</h3><span>perfil</span></div>
+            <p>Distribuição das pessoas que responderam.</p>
+            <div id="chart-age" class="chart-bars"></div>
+          </section>
+          <section class="chart-panel chart-panel-intent">
+            <div class="chart-panel-heading"><h3>Interesse principal</h3><span>intenção</span></div>
+            <p>Escolha feita na pergunta sobre games.</p>
+            <div id="chart-intent" class="chart-bars"></div>
+            <small>Quem escolheu jogar e depois aprender permanece em “Quero jogar” nesta pergunta.</small>
+          </section>
+          <section class="chart-panel chart-panel-rating">
+            <div class="chart-panel-heading"><h3>Avaliações</h3><span>1 a 5</span></div>
+            <p>Distribuição das notas recebidas.</p>
+            <div id="chart-rating" class="chart-bars"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>ARENA ITINERANTE <b>·</b> BEAST MARAGAMES</span>
+      <span>Painel do atendente</span>
+    </footer>
   </main>
+
   <div class="toast" role="status" aria-live="polite" id="toast"></div>
 </body>
 </html>

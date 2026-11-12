@@ -13,6 +13,17 @@
   let expirationTimer = null;
 
   window.panelApi = {
+    async formAnalytics(start, end) {
+      if (!session) throw new Error('SESSION_EXPIRED');
+      const { supabaseUrl, supabasePublishableKey } = window.PANEL_CONFIG;
+      const response = await fetch(`${supabaseUrl}/rest/v1/rpc/panel_form_analytics`, {
+        method: 'POST',
+        headers: { apikey: supabasePublishableKey, Authorization: `Bearer ${session}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p_start: start || null, p_end: end || null }),
+      });
+      if (!response.ok) throw new Error('ANALYTICS_UNAVAILABLE');
+      return response.json();
+    },
     async queueAction(action, queueId = null) {
       if (!session) throw new Error('SESSION_EXPIRED');
       const { supabaseUrl, supabasePublishableKey } = window.PANEL_CONFIG;
